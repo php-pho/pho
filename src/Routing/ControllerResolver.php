@@ -13,11 +13,6 @@ class ControllerResolver extends SymfonyControllerResolver
     private $urlMatcher;
     private $container;
 
-    public function __construct(LoggerInterface $logger = null)
-    {
-        parent::__construct($logger);
-    }
-
     public function setUrlMatcher(UrlMatcherInterface $urlMatcher)
     {
         $this->urlMatcher = $urlMatcher;
@@ -30,13 +25,21 @@ class ControllerResolver extends SymfonyControllerResolver
 
     public function getController(Request $request)
     {
-        $route = $this->urlMatcher->matchRequest($request);
-        $request->attributes->set('_controller', $route['_controller']);
+        $matchedRoute = $this->urlMatcher->matchRequest($request);
+        $request->attributes->add($matchedRoute);
 
-        return parent::getController($request);
+        $controller = parent::getController($request);
+
+        if (is_object($controller)) {
+            if (method_exists($controller, 'setRequest')) {
+                $controller->setRequest($request);
+            }
+        }
+
+        return $controller;
     }
 
-    protected function instantiateController($class)
+    public function instantiateController($class)
     {
         return $this->container->get($class);
     }

@@ -4,6 +4,7 @@ namespace Pho\Http;
 
 use Pho\Routing\Router;
 use Stack\Builder;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernel;
@@ -13,13 +14,15 @@ class Kernel
 {
     private $stackBuilder;
     private $httpKernel;
+    private $dispatcher;
     private $router;
     private $resolvedKernel;
 
-    public function __construct(Builder $builder, HttpKernel $httpKernel, Router $router)
+    public function __construct(Builder $builder, HttpKernel $httpKernel, EventDispatcherInterface $dispatcher, Router $router)
     {
         $this->stackBuilder = $builder;
         $this->httpKernel = $httpKernel;
+        $this->dispatcher = $dispatcher;
         $this->router = $router;
     }
 
@@ -42,5 +45,13 @@ class Kernel
     public function terminate($request, $response)
     {
         return $this->httpKernel->terminate($request, $response);
+    }
+
+    public function on($eventName, $callback, $priority = 0) {
+        $this->dispatcher->addListener($eventName, $callback, $priority);
+    }
+
+    public function subscribe(EventSubscriberInterface $subscriber) {
+        $this->dispatcher->addSubscriber($subscriber);
     }
 }
