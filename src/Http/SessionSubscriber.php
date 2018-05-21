@@ -2,15 +2,22 @@
 namespace Pho\Http;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Pho\Http\Session\Session;
 
-class SessionSubsciber implements EventSubscriberInterface
+class SessionSubscriber implements EventSubscriberInterface
 {
+    private $session;
+
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -18,12 +25,12 @@ class SessionSubsciber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $session = $this->getSession($request);
-        if (null === $session || $request->hasSession()) {
+        $this->session->start($request);
+        if (null === $this->session || $request->hasSession()) {
             return;
         }
 
-        $request->setSession($session);
+        $request->setSession($this->session);
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
@@ -37,7 +44,10 @@ class SessionSubsciber implements EventSubscriberInterface
         }
 
         if ($session->isStarted() || ($session instanceof Session && $session->hasBeenStarted())) {
-            $event->getResponse()
+            $response = $event->getResponse();
+            $this->session->save($response);
+
+            $response
                 ->setPrivate()
                 ->setMaxAge(0)
                 ->headers->addCacheControlDirective('must-revalidate');
@@ -48,12 +58,11 @@ class SessionSubsciber implements EventSubscriberInterface
     {
         return array(
             KernelEvents::REQUEST => array('onKernelRequest', 128),
-            // low priority to come after regular response listeners, same as SaveSessionListener
             KernelEvents::RESPONSE => array('onKernelResponse', -1000),
         );
     }
 
-    protected function getSession(Request $request) {
-
+    protected function getSession() {
+        // Nothing here
     }
 }

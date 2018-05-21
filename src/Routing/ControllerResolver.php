@@ -3,7 +3,6 @@
 namespace Pho\Routing;
 
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver as SymfonyControllerResolver;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -30,10 +29,8 @@ class ControllerResolver extends SymfonyControllerResolver
 
         $controller = parent::getController($request);
 
-        if (is_object($controller)) {
-            if (method_exists($controller, 'setRequest')) {
-                $controller->setRequest($request);
-            }
+        if (is_array($controller) && method_exists($controller[0], 'setRequest')) {
+            $controller[0]->setRequest($request);
         }
 
         return $controller;
@@ -41,6 +38,8 @@ class ControllerResolver extends SymfonyControllerResolver
 
     public function instantiateController($class)
     {
-        return $this->container->get($class);
+        $controller = $this->container->get($class);
+
+        return $controller;
     }
 }

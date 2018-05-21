@@ -3,8 +3,10 @@
 namespace Pho\Http;
 
 use Pho\Routing\Router;
+use Psr\Container\ContainerInterface;
 use Stack\Builder;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernel;
@@ -12,24 +14,31 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class Kernel
 {
+    private $container;
     private $stackBuilder;
     private $httpKernel;
     private $dispatcher;
     private $router;
     private $resolvedKernel;
 
-    public function __construct(Builder $builder, HttpKernel $httpKernel, EventDispatcherInterface $dispatcher, Router $router)
+    public function __construct(ContainerInterface $container, Builder $builder, HttpKernel $httpKernel, EventDispatcherInterface $dispatcher, Router $router)
     {
+        $this->container = $container;
         $this->stackBuilder = $builder;
         $this->httpKernel = $httpKernel;
         $this->dispatcher = $dispatcher;
         $this->router = $router;
     }
 
-    public function push(HttpKernelInterface $kernel)
+    public function push($kernel)
     {
-        $this->stackBuilder->push($kernel);
+        $kernel = is_string($kernel) ? $this->container->get($kernel) : $kernel;
 
+        if (!($kernel instanceof HttpKernelInterface)) {
+            throw new \InvalidArgumentException("Kernel must be HttpKernelInterface object !");
+        }
+
+        $this->stackBuilder->push($kernel);
         return $this;
     }
 
@@ -47,11 +56,21 @@ class Kernel
         return $this->httpKernel->terminate($request, $response);
     }
 
-    public function on($eventName, $callback, $priority = 0) {
+    public function on($eventName, $callback, $priority = 0) : self {
         $this->dispatcher->addListener($eventName, $callback, $priority);
+
+        return $this;
     }
 
-    public function subscribe(EventSubscriberInterface $subscriber) {
+    public function subscribe($subscriber) : self {
+        $subscriber = is_string($subscriber) ? $this->container->get($subscriber) : $subscriber;
+
+        if (!($subscriber instanceof EventSubscriberInterface)) {
+            throw new \InvalidArgumentException("Subscriber must be EventSubscriberInterface object !");
+        }
+
         $this->dispatcher->addSubscriber($subscriber);
+
+        return $this;
     }
 }
