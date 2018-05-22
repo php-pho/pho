@@ -10,25 +10,36 @@ use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 class HmacCookieSessionStorage implements SessionStorageInterface {
     protected $started = false;
+    protected $touched = false;
     protected $name = 'PHO_SESSION';
     protected $saveHandler;
     protected $bags = [];
     protected $data = [];
     protected $secret;
     protected $algorithm;
+    protected $request;
+    protected $response;
 
     public function __construct($secret = null, $algorithm = 'sha256') {
         $this->secret = $secret;
         $this->algorithm = $algorithm;
     }
 
-    public function start(Request $request = null)
+    public function setRequest(Request $request) {
+        $this->request = $request;
+    }
+
+    public function setResponse(Response $response) {
+        $this->response = $response;
+    }
+
+    public function start()
     {
         if ($this->started) {
             return true;
         }
 
-        $this->loadSession($request);
+        $this->loadSession($this->request);
     }
 
     public function isStarted()
@@ -61,8 +72,12 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
         return true;
     }
 
-    public function save(Response $response = null)
+    public function save()
     {
+        if (!$this->touched) {
+            return;
+        }
+
         $sessionData = [];
 
         foreach ($this->bags as $bag) {
@@ -75,7 +90,7 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
         $cookieValue = sprintf("%s|%s", $sessionString, $hmac);
 
         $cookie = new Cookie($this->getName(), $cookieValue);
-        $response->headers->setCookie($cookie);
+        $this->response->headers->setCookie($cookie);
     }
 
     public function clear()
@@ -90,6 +105,12 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
         if (!isset($this->bags[$name])) {
             throw new \InvalidArgumentException(sprintf('The SessionBagInterface %s is not registered.', $name));
         }
+
+        if (!$this->started) {
+            $this->start();
+        }
+
+        $this->touched = true;
 
         return $this->bags[$name];
     }
@@ -117,9 +138,9 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
         return $this->metadataBag;
     }
 
-    protected function loadSession(Request $request)
+    protected function loadSession()
     {
-        $this->data = $this->loadDataFromCookie($request);
+        $this->data = $this->loadDataFromCookie();
 
         foreach ($this->bags as $bag) {
             $key = $bag->getStorageKey();
@@ -134,9 +155,9 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
         return hash_hmac($this->algorithm, $data, $this->secret) == $signature;
     }
 
-    protected function loadDataFromCookie(Request $request) {
+    protected function loadDataFromCookie() {
         $cookieName = $this->getName();
-        $cookieValue = $request->cookies->get($cookieName, null);
+        $cookieValue = $this->request->cookies->get($cookieName, null);
 
         if (!$cookieValue) {
             return ($this->data = []);

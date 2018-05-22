@@ -9,13 +9,32 @@ use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 class Session extends SymfonySession {
-    public function start(Request $request = null)
-    {
-        return $this->storage->start($request);
+    private $request;
+    private $response;
+
+    public function setRequest(Request $request) {
+        $this->request = $request;
+
+        if (method_exists($this->storage, 'setRequest')) {
+            $this->storage->setRequest($request);
+        }
     }
 
-    public function save(Response $response = null)
+    public function setResponse(Response $response) {
+        $this->response = $response;
+
+        if (method_exists($this->storage, 'setResponse')) {
+            $this->storage->setResponse($response);
+        }
+    }
+
+    public function start()
     {
-        $this->storage->save($response);
+        return $this->storage->start();
+    }
+
+    public function save()
+    {
+        return $this->storage->save();
     }
 }

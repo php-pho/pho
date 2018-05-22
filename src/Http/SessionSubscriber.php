@@ -25,7 +25,12 @@ class SessionSubscriber implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $this->session->start($request);
+        $session = $this->getSession();
+
+        if (method_exists($session, 'setRequest')) {
+            $session->setRequest($request);
+        }
+
         if (null === $this->session || $request->hasSession()) {
             return;
         }
@@ -45,7 +50,11 @@ class SessionSubscriber implements EventSubscriberInterface
 
         if ($session->isStarted() || ($session instanceof Session && $session->hasBeenStarted())) {
             $response = $event->getResponse();
-            $this->session->save($response);
+
+            if (method_exists($session, 'setResponse')) {
+                $session->setResponse($response);
+                $this->session->save();
+            }
 
             $response
                 ->setPrivate()
@@ -63,6 +72,6 @@ class SessionSubscriber implements EventSubscriberInterface
     }
 
     protected function getSession() {
-        // Nothing here
+        return $this->session;
     }
 }

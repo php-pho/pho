@@ -16,7 +16,9 @@ class SessionServiceProvider implements ServiceProviderInterface {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([
-            SessionStorageInterface::class => create(HmacCookieSessionStorage::class),
+            'session.hmac_secret' => '',
+            HmacCookieSessionStorage::class => create()->constructor(get('session.hmac_secret')),
+            SessionStorageInterface::class => get(HmacCookieSessionStorage::class),
             AttributeBagInterface::class => value(null),
             FlashBagInterface::class => value(null),
         ], $opts);
