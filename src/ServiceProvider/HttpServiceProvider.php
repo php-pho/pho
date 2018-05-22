@@ -14,7 +14,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\RouteCollection;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
@@ -32,6 +36,13 @@ class HttpServiceProvider implements ServiceProviderInterface
             ->constructor(get(LoggerInterface::class))
             ->method('setUrlMatcher', get(UrlMatcher::class))
             ->method('setContainer', get(ContainerInterface::class));
+        $def[UrlGeneratorInterface::class] = autowire(UrlGenerator::class)
+            ->constructor(
+                get(RouteCollection::class),
+                get(RequestContext::class),
+                get(LoggerInterface::class)
+            );
+        $def[RequestContext::class] = autowire()->method('fromRequest', get('http.request'));
 
         $containerBuilder->addDefinitions($def);
     }
