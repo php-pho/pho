@@ -9,7 +9,8 @@ use Twig_LoaderInterface;
 use Twig_Loader_Filesystem;
 use function DI\get;
 
-class TwigServiceProvider implements ServiceProviderInterface {
+class TwigServiceProvider implements ServiceProviderInterface
+{
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([

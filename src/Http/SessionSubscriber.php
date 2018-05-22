@@ -71,7 +71,8 @@ class SessionSubscriber implements EventSubscriberInterface
         );
     }
 
-    protected function getSession() {
+    protected function getSession()
+    {
         return $this->session;
     }
 }

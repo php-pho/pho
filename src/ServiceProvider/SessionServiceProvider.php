@@ -12,7 +12,8 @@ use function DI\create;
 use function DI\value;
 use function DI\get;
 
-class SessionServiceProvider implements ServiceProviderInterface {
+class SessionServiceProvider implements ServiceProviderInterface
+{
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([

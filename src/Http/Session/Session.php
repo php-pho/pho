@@ -8,11 +8,13 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
-class Session extends SymfonySession {
+class Session extends SymfonySession
+{
     private $request;
     private $response;
 
-    public function setRequest(Request $request) {
+    public function setRequest(Request $request)
+    {
         $this->request = $request;
 
         if (method_exists($this->storage, 'setRequest')) {
@@ -20,7 +22,8 @@ class Session extends SymfonySession {
         }
     }
 
-    public function setResponse(Response $response) {
+    public function setResponse(Response $response)
+    {
         $this->response = $response;
 
         if (method_exists($this->storage, 'setResponse')) {

@@ -56,13 +56,15 @@ class Kernel
         return $this->httpKernel->terminate($request, $response);
     }
 
-    public function on($eventName, $callback, $priority = 0) : self {
+    public function on($eventName, $callback, $priority = 0) : self
+    {
         $this->dispatcher->addListener($eventName, $callback, $priority);
 
         return $this;
     }
 
-    public function subscribe($subscriber) : self {
+    public function subscribe($subscriber) : self
+    {
         $subscriber = is_string($subscriber) ? $this->container->get($subscriber) : $subscriber;
 
         if (!($subscriber instanceof EventSubscriberInterface)) {

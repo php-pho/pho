@@ -3,7 +3,8 @@ namespace Pho\Http;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class BeforeController {
+class BeforeController
+{
     private $before;
     private $controller;
     private $request;
@@ -14,7 +15,8 @@ class BeforeController {
         $this->controller = $controller;
     }
 
-    public function setRequest(Request $request) {
+    public function setRequest(Request $request)
+    {
         $this->request = $request;
     }
 

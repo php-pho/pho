@@ -7,7 +7,8 @@ use function DI\get;
 use Pho\Core\ServiceProviderInterface;
 use Predis\Client;
 
-class PredisServiceProvider implements ServiceProviderInterface {
+class PredisServiceProvider implements ServiceProviderInterface
+{
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([

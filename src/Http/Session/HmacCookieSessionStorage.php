@@ -8,7 +8,8 @@ use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
-class HmacCookieSessionStorage implements SessionStorageInterface {
+class HmacCookieSessionStorage implements SessionStorageInterface
+{
     protected $started = false;
     protected $touched = false;
     protected $name = 'PHO_SESSION';
@@ -20,16 +21,19 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
     protected $request;
     protected $response;
 
-    public function __construct($secret = null, $algorithm = 'sha256') {
+    public function __construct($secret = null, $algorithm = 'sha256')
+    {
         $this->secret = $secret;
         $this->algorithm = $algorithm;
     }
 
-    public function setRequest(Request $request) {
+    public function setRequest(Request $request)
+    {
         $this->request = $request;
     }
 
-    public function setResponse(Response $response) {
+    public function setResponse(Response $response)
+    {
         $this->response = $response;
     }
 
@@ -151,11 +155,13 @@ class HmacCookieSessionStorage implements SessionStorageInterface {
         $this->started = true;
     }
 
-    protected function checkSignature($data, $signature) {
+    protected function checkSignature($data, $signature)
+    {
         return hash_hmac($this->algorithm, $data, $this->secret) == $signature;
     }
 
-    protected function loadDataFromCookie() {
+    protected function loadDataFromCookie()
+    {
         $cookieName = $this->getName();
         $cookieValue = $this->request->cookies->get($cookieName, null);
 

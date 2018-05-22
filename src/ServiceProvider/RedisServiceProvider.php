@@ -7,7 +7,8 @@ use Pho\Core\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
 use Redis;
 
-class RedisServiceProvider implements ServiceProviderInterface {
+class RedisServiceProvider implements ServiceProviderInterface
+{
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([

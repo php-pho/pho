@@ -21,8 +21,7 @@ final class ContainerBuilderFactory
         $annotations = false,
         $compiled_dir = null,
         $proxies_dir = null
-    ): ContainerBuilder
-    {
+    ): ContainerBuilder {
         return static::create($autowiring, $annotations, $compiled_dir, $proxies_dir);
     }
 
@@ -31,8 +30,7 @@ final class ContainerBuilderFactory
         $annotations = false,
         $compiled_dir = null,
         $proxies_dir = null
-    ): ContainerBuilder
-    {
+    ): ContainerBuilder {
         $builder = new ContainerBuilder();
         $builder->useAutowiring($autowiring);
         $builder->useAnnotations($annotations);

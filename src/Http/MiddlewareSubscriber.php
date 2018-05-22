@@ -7,7 +7,8 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class MiddlewareSubscriber implements EventSubscriberInterface {
+class MiddlewareSubscriber implements EventSubscriberInterface
+{
     private $controllerResolver;
 
     public function __construct(ControllerResolverInterface $controllerResolver)
@@ -15,7 +16,8 @@ class MiddlewareSubscriber implements EventSubscriberInterface {
         $this->controllerResolver = $controllerResolver;
     }
 
-    public function onKernelController(FilterControllerEvent $event) {
+    public function onKernelController(FilterControllerEvent $event)
+    {
         $request = $event->getRequest();
         $controller = $event->getController();
 
@@ -27,7 +29,8 @@ class MiddlewareSubscriber implements EventSubscriberInterface {
         }
     }
 
-    public function onKernelResponse(FilterResponseEvent $event) {
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
         $request = $event->getRequest();
         $response = $event->getResponse();
 

@@ -4,7 +4,8 @@ namespace Pho\Console;
 use Psr\Container\ContainerInterface;
 use Silly\Edition\PhpDi\Application;
 
-abstract class ConsoleKernel {
+abstract class ConsoleKernel
+{
     private $container;
     private $app;
 
@@ -14,11 +15,13 @@ abstract class ConsoleKernel {
         $this->app = $app;
     }
 
-    protected function command($expression, $callable, array $aliases = []) {
+    protected function command($expression, $callable, array $aliases = [])
+    {
         $this->app->command($expression, $callable, $aliases);
     }
 
-    public function run() {
+    public function run()
+    {
         $this->app->run();
     }
 

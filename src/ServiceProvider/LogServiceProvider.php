@@ -9,7 +9,8 @@ use Monolog\Logger;
 use Pho\Core\ServiceProviderInterface;
 use Psr\Log\LoggerInterface;
 
-class LogServiceProvider implements ServiceProviderInterface {
+class LogServiceProvider implements ServiceProviderInterface
+{
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([
