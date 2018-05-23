@@ -2,9 +2,13 @@
 namespace Pho\ServiceProvider;
 
 use DI\ContainerBuilder;
+use function DI\decorate;
 use Pho\Core\ServiceProviderInterface;
+use Pho\Http\Kernel;
 use Pho\Http\Session\HmacCookieSessionStorage;
 use Pho\Http\Session\Session;
+use Pho\Http\SessionSubscriber;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
@@ -30,6 +34,11 @@ class SessionServiceProvider implements ServiceProviderInterface
                 get(AttributeBagInterface::class),
                 get(FlashBagInterface::class)
             );
+        $def[Kernel::class] = decorate(function($kernel, ContainerInterface $c) {
+            $kernel->subscribe(SessionSubscriber::class);
+
+            return $kernel;
+        });
 
         $containerBuilder->addDefinitions($def);
     }
