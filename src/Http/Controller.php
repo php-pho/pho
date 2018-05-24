@@ -28,6 +28,11 @@ abstract class Controller
         return new JsonResponse($data, $status, $headers, $json);
     }
 
+    protected function text($content = null, int $status = 200, array $headers = [])
+    {
+        return new Response($content, $status, $headers);
+    }
+
     protected function redirect($endpoint, int $status = 302, array $headers = [])
     {
         return new RedirectResponse($endpoint, $status, $headers);
