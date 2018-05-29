@@ -24,12 +24,16 @@ class ControllerResolver extends SymfonyControllerResolver
 
     public function getController(Request $request)
     {
-        $matchedRoute = $this->urlMatcher->matchRequest($request);
-        $request->attributes->add($matchedRoute);
+        if (!$request->attributes->has('_controller')) {
+            $matchedRoute = $this->urlMatcher->matchRequest($request);
+            $request->attributes->add($matchedRoute);
+        }
 
         $controller = parent::getController($request);
 
-        if (is_array($controller) && method_exists($controller[0], 'setRequest')) {
+        if (is_object($controller) && method_exists($controller, 'setRequest')) {
+            $controller->setRequest($request);
+        } elseif (is_array($controller) && method_exists($controller[0], 'setRequest')) {
             $controller[0]->setRequest($request);
         }
 
