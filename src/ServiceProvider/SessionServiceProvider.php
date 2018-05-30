@@ -34,7 +34,7 @@ class SessionServiceProvider implements ServiceProviderInterface
                 get(AttributeBagInterface::class),
                 get(FlashBagInterface::class)
             );
-        $def[Kernel::class] = decorate(function($kernel, ContainerInterface $c) {
+        $def[Kernel::class] = decorate(function ($kernel, ContainerInterface $c) {
             $kernel->subscribe(SessionSubscriber::class);
 
             return $kernel;

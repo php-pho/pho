@@ -5,7 +5,8 @@ use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ExceptionController {
+class ExceptionController
+{
     private $handler;
     private $request;
 
@@ -14,7 +15,8 @@ class ExceptionController {
         $this->handler = $exceptionHandler;
     }
 
-    public function setRequest(Request $request) {
+    public function setRequest(Request $request)
+    {
         $this->request = $request;
     }
 
