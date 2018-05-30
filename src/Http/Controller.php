@@ -73,6 +73,7 @@ abstract class Controller
     {
         return empty($field) ? $this->request->request->all() : $this->request->request->get($field, $default);
     }
+
     public function getQueryParam($field = null, $default = null)
     {
         return empty($field) ? $this->request->query->all() : $this->request->query->get($field, $default);

@@ -8,7 +8,7 @@ final class ContainerBuilderFactory
 {
     public static function development(): ContainerBuilder
     {
-        return static::create(true, true, null, null);
+        return static::create(true, false, null, null);
     }
 
     public static function lightweight(): ContainerBuilder
@@ -18,7 +18,7 @@ final class ContainerBuilderFactory
 
     public static function production(
         $autowiring = true,
-        $annotations = true,
+        $annotations = false,
         $compiled_dir = null,
         $proxies_dir = null
     ): ContainerBuilder {
@@ -27,7 +27,7 @@ final class ContainerBuilderFactory
 
     public static function create(
         $autowiring = true,
-        $annotations = true,
+        $annotations = false,
         $compiled_dir = null,
         $proxies_dir = null
     ): ContainerBuilder {
