@@ -23,6 +23,10 @@ abstract class Controller
         $this->request = $request;
     }
 
+    protected function get($keyName) {
+        return $this->container->get($keyName);
+    }
+
     protected function json($data = null, int $status = 200, array $headers = [], bool $json = false)
     {
         return new JsonResponse($data, $status, $headers, $json);
