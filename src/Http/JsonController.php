@@ -4,6 +4,7 @@ namespace Pho\Http;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
+use Respect\Validation\Exceptions\NestedValidationException;
 
 class JsonController extends Controller {
     public function setRequest(Request $request)
@@ -25,7 +26,7 @@ class JsonController extends Controller {
     }
 
     protected function jsonValue($key, $required = false, $default = null) {
-        if ($this->body->has($key)) {
+        if (!$this->body->has($key)) {
             if (!$required) {
                 return $default;
             }
