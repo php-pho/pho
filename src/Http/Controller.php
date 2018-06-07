@@ -12,6 +12,8 @@ abstract class Controller
 {
     protected $container;
     protected $request;
+    protected $body;
+    protected $params;
 
     public function __construct(ContainerInterface $container)
     {
@@ -21,6 +23,8 @@ abstract class Controller
     public function setRequest(Request $request)
     {
         $this->request = $request;
+        $this->body = $request->request;
+        $this->params = $request->query;
     }
 
     protected function get($keyName) {
@@ -75,11 +79,16 @@ abstract class Controller
 
     public function getPostData($field = null, $default = null)
     {
-        return empty($field) ? $this->request->request->all() : $this->request->request->get($field, $default);
+        return empty($field) ? $this->body->all() : $this->body->get($field, $default);
     }
 
     public function getQueryParam($field = null, $default = null)
     {
-        return empty($field) ? $this->request->query->all() : $this->request->query->get($field, $default);
+        return empty($field) ? $this->params->all() : $this->params->get($field, $default);
+    }
+
+    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = []) {
+        $validator = call_user_func_array([$validatorClass, 'validator'], [$method, $requiredKeys, $optionalKeys]);
+        $validator->assert($this->body->all());
     }
 }
