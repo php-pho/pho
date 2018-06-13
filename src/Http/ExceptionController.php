@@ -7,8 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionController
 {
-    private $handler;
-    private $request;
+    protected $handler;
+    protected $request;
 
     public function __construct(ExceptionHandler $exceptionHandler)
     {
