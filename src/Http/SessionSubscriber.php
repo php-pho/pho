@@ -48,7 +48,7 @@ class SessionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($session->isStarted() || ($session instanceof Session && $session->hasBeenStarted())) {
+        if ($session->isStarted() || ($session instanceof Session && $session->isStarted())) {
             $response = $event->getResponse();
 
             if (method_exists($session, 'setResponse')) {
