@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.1",
         "php-di/php-di": "^6.0",
         "monolog/monolog": "^1.23",
         "stack/builder": "^1.0",
