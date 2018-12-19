@@ -43,6 +43,8 @@ class Application
             throw new \RuntimeException(sprintf("Program '%' doesn't have 'run' method.", $program));
         }
 
-        return $this->buildContainer()->call([$program, 'run'], $args);
+        $container = $this->container ?: $this->buildContainer();
+
+        return $container->call([$program, 'run'], $args);
     }
 }
