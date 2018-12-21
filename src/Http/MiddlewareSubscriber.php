@@ -6,14 +6,16 @@ use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class MiddlewareSubscriber implements EventSubscriberInterface
 {
-    private $controllerResolver;
+    private $container;
 
-    public function __construct(ControllerResolverInterface $controllerResolver)
+    public function __construct(ContainerInterface $container)
     {
-        $this->controllerResolver = $controllerResolver;
+        $this->container = $container;
     }
 
     public function onKernelController(FilterControllerEvent $event)
@@ -23,8 +25,22 @@ class MiddlewareSubscriber implements EventSubscriberInterface
 
         if ($request->attributes->has('_before')) {
             $before = $request->attributes->get('_before');
-            $wrapController = new BeforeController($before, $controller);
-            $wrapController->setRequest($request);
+            $before = is_array($before) ? $before : [$before];
+
+            $wrapController = null;
+
+            for ($i = count($before) - 1; $i >= 0; $i--) {
+                $middleware = $before[$i];
+                $callable =  is_string($middleware) ? $this->container->get($middleware) : $middleware;
+
+                if (!is_callable($callable)) {
+                    throw new \Exception('Before middleware is not callable !');
+                }
+
+                $wrapController = new BeforeController($callable, $wrapController ?: $controller);
+                $wrapController->setRequest($request);
+            }
+
             $event->setController($wrapController);
         }
     }
@@ -36,9 +52,15 @@ class MiddlewareSubscriber implements EventSubscriberInterface
 
         if ($request->attributes->has('_after')) {
             $after = $request->attributes->get('_after');
-            $afterResponse = call_user_func_array($after, [$request, $response]);
-            if ($afterResponse) {
-                $event->setResponse($afterResponse);
+            $after = is_array($after) ? $after : [$after];
+
+            foreach ($after as $middleware) {
+                $callable =  is_string($middleware) ? $this->container->get($middleware) : $middleware;
+
+                $afterResponse = call_user_func_array($callable, [$request, $response]);
+                if ($afterResponse && $afterResponse instanceof Response) {
+                    return $event->setResponse($afterResponse);
+                }
             }
         }
     }
