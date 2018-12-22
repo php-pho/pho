@@ -4,25 +4,29 @@ namespace Pho\Routing;
 
 use Symfony\Component\Routing\RouteCollection;
 
-class Router
+class Routing
 {
     private $collection;
 
-    public function __construct(RouteCollection $collection)
+    public function __construct(RouteCollection $collection = null)
     {
-        $this->collection = $collection;
+        $this->collection = $collection ?: new RouteCollection();
+    }
+
+    public function getRouteCollection() {
+        return $this->collection;
     }
 
     public function group($prefix, callable $groupCallback, array $defaults = []): self
     {
-        $childRouteCollection = new RouteCollection();
-        $childRouter = new static($childRouteCollection);
+        $childRouter = new static();
+        $childRouteCollection = $childRouter->getRouteCollection();
         call_user_func_array($groupCallback, [$childRouter]);
         $childRouteCollection->addPrefix($prefix);
         $childRouteCollection->addDefaults($defaults);
         $this->collection->addCollection($childRouteCollection);
 
-        return $childRouter;
+        return $this;
     }
 
     public function map(string $method, string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
@@ -67,10 +71,5 @@ class Router
     public function options(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('OPTIONS', $path, $handler, $name, $defaults, $requirements, $options);
-    }
-
-    public function routes()
-    {
-        // Nothing here
     }
 }
