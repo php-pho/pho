@@ -14,17 +14,22 @@
         "php-di/php-di": "^6.0",
         "monolog/monolog": "^1.23",
         "stack/builder": "^1.0",
+        "symfony/config": "^4.1",
         "symfony/routing": "^4.1",
         "symfony/twig-bridge": "^4.1",
         "twig/twig": "^2.0",
         "mnapoli/silly-php-di": "^1.2",
         "predis/predis": "^1.1",
         "illuminate/database": "^5.6",
-        "illuminate/events": "^5.6"
+        "illuminate/events": "^5.6",
+        "respect/validation": "^1.1"
     },
     "autoload": {
         "psr-4": {
             "Pho\\": "src/"
         }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^0.10.6"
     }
 }

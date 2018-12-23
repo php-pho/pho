@@ -5,7 +5,6 @@ use Pho\Core\ServiceProviderInterface;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Silly\Edition\PhpDi\Application;
-use function DI\object;
 use function DI\get;
 use function DI\create;
 

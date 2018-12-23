@@ -20,6 +20,7 @@ class HmacCookieSessionStorage implements SessionStorageInterface
     protected $algorithm;
     protected $request;
     protected $response;
+    protected $metadataBag;
 
     public function __construct($secret = null, $algorithm = 'sha256')
     {
@@ -43,7 +44,7 @@ class HmacCookieSessionStorage implements SessionStorageInterface
             return true;
         }
 
-        $this->loadSession($this->request);
+        $this->loadSession();
     }
 
     public function isStarted()
