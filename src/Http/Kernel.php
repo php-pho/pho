@@ -2,7 +2,6 @@
 
 namespace Pho\Http;
 
-use Pho\Routing\Router;
 use Psr\Container\ContainerInterface;
 use Stack\Builder;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -18,16 +17,14 @@ class Kernel
     private $stackBuilder;
     private $httpKernel;
     private $dispatcher;
-    private $router;
     private $resolvedKernel;
 
-    public function __construct(ContainerInterface $container, Builder $builder, HttpKernel $httpKernel, EventDispatcherInterface $dispatcher, Router $router)
+    public function __construct(ContainerInterface $container, Builder $builder, HttpKernel $httpKernel, EventDispatcherInterface $dispatcher)
     {
         $this->container = $container;
         $this->stackBuilder = $builder;
         $this->httpKernel = $httpKernel;
         $this->dispatcher = $dispatcher;
-        $this->router = $router;
     }
 
     public function push($kernel)

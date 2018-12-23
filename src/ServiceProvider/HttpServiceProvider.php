@@ -6,7 +6,6 @@ use DI\ContainerBuilder;
 use Pho\Core\ServiceProviderInterface;
 use Pho\Http\ExceptionController;
 use Pho\Http\MiddlewareSubscriber;
-use Pho\Routing\ControllerResolver;
 use Psr\Container\ContainerInterface;
 use function DI\autowire;
 use function DI\get;
@@ -22,12 +21,21 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Router;
+use Pho\Http\Kernel;
+use Symfony\Component\HttpKernel\EventListener\RouterListener;
+use function DI\decorate;
+use Pho\Routing\ControllerResolver;
+use Pho\Routing\RouteLoader;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = $opts;
+        $def = array_merge([
+            'router.resource' => null,
+            'router.options' => [],
+        ], $opts);
 
         $def['http.request'] = function () {
             return Request::createFromGlobals();
@@ -48,16 +56,23 @@ class HttpServiceProvider implements ServiceProviderInterface
         $def[EventDispatcherInterface::class] = autowire(EventDispatcher::class)
             ->method('addSubscriber', get(ExceptionListener::class))
             ->method('addSubscriber', get(MiddlewareSubscriber::class));
-        $def[ControllerResolverInterface::class] = autowire(ControllerResolver::class)
-            ->constructor(get(LoggerInterface::class))
-            ->method('setUrlMatcher', get(UrlMatcher::class))
-            ->method('setContainer', get(ContainerInterface::class));
-        $def[UrlGeneratorInterface::class] = autowire(UrlGenerator::class)
+        $def[ControllerResolverInterface::class] = autowire(ControllerResolver::class);
+        $def[Router::class] = autowire()
             ->constructor(
-                get(RouteCollection::class),
-                get(RequestContext::class),
-                get(LoggerInterface::class)
+                get(RouteLoader::class),
+                get('router.resource'),
+                get('router.options')
             );
+        $def[UrlGeneratorInterface::class] = get(Router::class);
+        $def[RouterListener::class] = autowire()
+            ->constructor(
+                get(Router::class)
+            );
+        $def[Kernel::class] = decorate(function ($kernel, ContainerInterface $c) {
+            $kernel->subscribe(RouterListener::class);
+
+            return $kernel;
+        });
         $def[RequestContext::class] = autowire()->method('fromRequest', get('http.request'));
 
         $containerBuilder->addDefinitions($def);

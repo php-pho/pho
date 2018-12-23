@@ -3,8 +3,10 @@ namespace Pho\Validator;
 
 use Respect\Validation\Validator as v;
 
-abstract class Base {
-    public static function validator($validatorName, $requiredKeys = [], $optionalKeys = []) {
+abstract class Base
+{
+    public static function validator($validatorName, $requiredKeys = [], $optionalKeys = [])
+    {
         $rules = call_user_func_array([static::class, $validatorName], []);
         $args = [];
 

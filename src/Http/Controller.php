@@ -27,7 +27,8 @@ abstract class Controller
         $this->params = $request->query;
     }
 
-    protected function get($keyName) {
+    protected function get($keyName)
+    {
         return $this->container->get($keyName);
     }
 
@@ -87,7 +88,8 @@ abstract class Controller
         return empty($field) ? $this->params->all() : $this->params->get($field, $default);
     }
 
-    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = []) {
+    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = [])
+    {
         $validator = call_user_func_array([$validatorClass, 'validator'], [$method, $requiredKeys, $optionalKeys]);
         $validator->assert($this->body->all());
     }
