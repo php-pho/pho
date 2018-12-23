@@ -2,13 +2,13 @@
 namespace Pho\ServiceProvider;
 
 use function DI\autowire;
-use DI\ContainerBuilder;
-use Pho\Core\ServiceProviderInterface;
-use Symfony\Bridge\Twig\Extension\RoutingExtension;
+use function DI\get;
 use Twig_Environment;
 use Twig_LoaderInterface;
 use Twig_Loader_Filesystem;
-use function DI\get;
+use DI\ContainerBuilder;
+use Pho\Core\ServiceProviderInterface;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
 
 class TwigServiceProvider implements ServiceProviderInterface
 {

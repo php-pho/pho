@@ -2,13 +2,14 @@
 
 namespace Pho\ServiceProvider;
 
+use function DI\autowire;
+use function DI\get;
+use function DI\decorate;
 use DI\ContainerBuilder;
 use Pho\Core\ServiceProviderInterface;
 use Pho\Http\ExceptionController;
 use Pho\Http\MiddlewareSubscriber;
 use Psr\Container\ContainerInterface;
-use function DI\autowire;
-use function DI\get;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -16,15 +17,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Router;
 use Pho\Http\Kernel;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use function DI\decorate;
 use Pho\Routing\ControllerResolver;
 use Pho\Routing\RouteLoader;
 
@@ -40,7 +37,6 @@ class HttpServiceProvider implements ServiceProviderInterface
         $def['http.request'] = function () {
             return Request::createFromGlobals();
         };
-
         $def[ExceptionListener::class] = autowire()
             ->constructor(
                 get(ExceptionController::class),

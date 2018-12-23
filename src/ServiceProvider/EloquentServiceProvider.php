@@ -3,7 +3,6 @@
 namespace Pho\ServiceProvider;
 
 use function DI\autowire;
-use function DI\object;
 use function DI\get;
 use DI\ContainerBuilder;
 use Illuminate\Database\Capsule\Manager;
@@ -37,7 +36,6 @@ class EloquentServiceProvider implements ServiceProviderInterface
         };
         $def['capsule'] = get(Manager::class);
         $def['db'] = get(DatabaseManager::class);
-
 
         $containerBuilder->addDefinitions($def);
     }

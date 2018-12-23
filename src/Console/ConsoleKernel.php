@@ -15,14 +15,14 @@ abstract class ConsoleKernel
         $this->app = $app;
     }
 
-    protected function command($expression, $callable, array $aliases = [])
+    protected function command(string $expression, $callable, array $aliases = [])
     {
         $this->app->command($expression, $callable, $aliases);
     }
 
-    public function run()
+    public function run() : int
     {
-        $this->app->run();
+        return $this->app->run();
     }
 
     abstract public function commands();
