@@ -6,7 +6,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Respect\Validation\Exceptions\NestedValidationException;
 
-class JsonController extends Controller {
+class JsonController extends Controller
+{
     public function setRequest(Request $request)
     {
         parent::setRequest($request);
@@ -25,7 +26,8 @@ class JsonController extends Controller {
         $this->params = $request->query;
     }
 
-    protected function jsonValue($key, $required = false, $default = null) {
+    protected function jsonValue($key, $required = false, $default = null)
+    {
         if (!$this->body->has($key)) {
             if (!$required) {
                 return $default;
@@ -36,7 +38,8 @@ class JsonController extends Controller {
         return $this->body->get($key);
     }
 
-    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = []) {
+    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = [])
+    {
         $validator = call_user_func_array([$validatorClass, 'validator'], [$method, $requiredKeys, $optionalKeys]);
 
         try {

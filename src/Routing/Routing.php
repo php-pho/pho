@@ -13,7 +13,8 @@ class Routing
         $this->collection = $collection ?: new RouteCollection();
     }
 
-    public function getRouteCollection() {
+    public function getRouteCollection()
+    {
         return $this->collection;
     }
 

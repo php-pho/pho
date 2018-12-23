@@ -4,8 +4,10 @@ namespace Pho\Routing;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\RouteCollection;
 
-abstract class RouteLoader extends Loader {
-    public function load($resource, $type = null) {
+abstract class RouteLoader extends Loader
+{
+    public function load($resource, $type = null)
+    {
         $routes = new RouteCollection();
         $routing = new Routing($routes);
         $this->routes($routing);
@@ -13,9 +15,10 @@ abstract class RouteLoader extends Loader {
         return $routes;
     }
 
-    public function supports($resource, $type = null) {
+    public function supports($resource, $type = null)
+    {
         return true;
     }
 
-    abstract function routes(Routing $routing);
+    abstract public function routes(Routing $routing);
 }
