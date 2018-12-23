@@ -26,12 +26,16 @@ use Pho\Http\Kernel;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use function DI\decorate;
 use Pho\Routing\ControllerResolver;
+use Pho\Routing\RouteLoader;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = $opts;
+        $def = array_merge([
+            'router.resource' => null,
+            'router.options' => [],
+        ], $opts);
 
         $def['http.request'] = function () {
             return Request::createFromGlobals();
@@ -53,9 +57,12 @@ class HttpServiceProvider implements ServiceProviderInterface
             ->method('addSubscriber', get(ExceptionListener::class))
             ->method('addSubscriber', get(MiddlewareSubscriber::class));
         $def[ControllerResolverInterface::class] = autowire(ControllerResolver::class);
-        //     ->constructor(get(LoggerInterface::class))
-        //     ->method('setUrlMatcher', get(UrlMatcher::class))
-        //     ->method('setContainer', get(ContainerInterface::class));
+        $def[Router::class] = autowire()
+            ->constructor(
+                get(RouteLoader::class),
+                get('router.resource'),
+                get('router.options')
+            );
         $def[UrlGeneratorInterface::class] = get(Router::class);
         $def[RouterListener::class] = autowire()
             ->constructor(
