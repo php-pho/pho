@@ -30,6 +30,7 @@ class HttpServiceProvider implements ServiceProviderInterface
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
         $def = array_merge([
+            'kernel.class' => null,
             'router.resource' => null,
             'router.options' => [],
         ], $opts);
@@ -64,11 +65,16 @@ class HttpServiceProvider implements ServiceProviderInterface
             ->constructor(
                 get(Router::class)
             );
-        $def[Kernel::class] = decorate(function ($kernel, ContainerInterface $c) {
+        $def[Kernel::class] = function (ContainerInterface $c) {
+            $kernelClass = $c->get('kernel.class');
+            $kernel = $c->get($kernelClass);
+
             $kernel->subscribe(RouterListener::class);
+            $kernel->stacks();
+            $kernel->events();
 
             return $kernel;
-        });
+        };
         $def[RequestContext::class] = autowire()->method('fromRequest', get('http.request'));
 
         $containerBuilder->addDefinitions($def);

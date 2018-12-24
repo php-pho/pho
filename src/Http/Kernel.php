@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-class Kernel
+abstract class Kernel
 {
     private $container;
     private $stackBuilder;
@@ -72,4 +72,7 @@ class Kernel
 
         return $this;
     }
+
+    abstract public function stacks();
+    abstract public function events();
 }
