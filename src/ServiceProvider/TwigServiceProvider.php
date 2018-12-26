@@ -22,8 +22,7 @@ class TwigServiceProvider implements ServiceProviderInterface
         $def[Twig_LoaderInterface::class] = autowire(Twig_Loader_Filesystem::class)
             ->method('addPath', get('twig.path'));
         $def[Twig_Environment::class] = autowire()
-            ->constructor(get(Twig_LoaderInterface::class), get('twig.options'))
-            ->method('addExtension', get(RoutingExtension::class));
+            ->constructor(get(Twig_LoaderInterface::class), get('twig.options'));
         $def['twig'] = get(Twig_Environment::class);
 
         $containerBuilder->addDefinitions($def);

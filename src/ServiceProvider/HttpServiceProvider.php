@@ -5,6 +5,7 @@ namespace Pho\ServiceProvider;
 use function DI\autowire;
 use function DI\get;
 use function DI\decorate;
+use Twig_Environment;
 use DI\ContainerBuilder;
 use Pho\Core\ServiceProviderInterface;
 use Pho\Http\ExceptionController;
@@ -76,6 +77,10 @@ class HttpServiceProvider implements ServiceProviderInterface
             return $kernel;
         };
         $def[RequestContext::class] = autowire()->method('fromRequest', get('http.request'));
+        $def[Twig_Environment::class] = decorate(function(Twig_Environment $twig, ContainerInterface $c) {
+            $twig->addExtension($c->get(RoutingExtension::class));
+            return $twig;
+        });
 
         $containerBuilder->addDefinitions($def);
     }
