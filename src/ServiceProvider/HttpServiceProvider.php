@@ -25,6 +25,7 @@ use Pho\Http\Kernel;
 use Symfony\Component\HttpKernel\EventListener\RouterListener;
 use Pho\Routing\ControllerResolver;
 use Pho\Routing\RouteLoader;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
