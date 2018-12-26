@@ -15,6 +15,10 @@ class BeforeController
         $this->controller = $controller;
     }
 
+    public function getController() {
+        return $this->controller;
+    }
+
     public function setRequest(Request $request)
     {
         $this->request = $request;
