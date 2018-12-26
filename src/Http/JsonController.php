@@ -26,7 +26,7 @@ class JsonController extends Controller
         $this->params = $request->query;
     }
 
-    protected function jsonValue($key, $required = false, $default = null)
+    protected function jsonValue(string $key, bool $required = false, $default = null)
     {
         if (!$this->body->has($key)) {
             if (!$required) {
@@ -38,7 +38,7 @@ class JsonController extends Controller
         return $this->body->get($key);
     }
 
-    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = [])
+    protected function validateBody($validatorClass, $method, array $requiredKeys = [], array $optionalKeys = [])
     {
         $validator = call_user_func_array([$validatorClass, 'validator'], [$method, $requiredKeys, $optionalKeys]);
 

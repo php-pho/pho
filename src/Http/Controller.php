@@ -42,33 +42,33 @@ abstract class Controller
         return new Response($content, $status, $headers);
     }
 
-    protected function redirect($endpoint, int $status = 302, array $headers = [])
+    protected function redirect(string $endpoint, int $status = 302, array $headers = [])
     {
         return new RedirectResponse($endpoint, $status, $headers);
     }
 
-    protected function redirectFor($named_route, $params = [], int $status = 302, array $headers = [])
+    protected function redirectFor(string $named_route, array $params = [], int $status = 302, array $headers = [])
     {
         $endpoint = $this->container->get(UrlGeneratorInterface::class)->generate($named_route, $params);
 
         return $this->redirect($endpoint, $status, $headers);
     }
 
-    public function redirectWithFlash($named_route, $params = [], $flash_type, $flash_content)
+    public function redirectWithFlash(string $named_route, array $params = [], string $flash_type, string $flash_content)
     {
         $this->addFlashMessage($flash_type, $flash_content);
 
         return $this->redirectFor($named_route, $params);
     }
 
-    public function render($template, array $data = [], int $status = 200, array $headers = [])
+    public function render(string $template, array $data = [], int $status = 200, array $headers = [])
     {
         $content = $this->container->get('twig')->render($template, $data);
 
         return new Response($content, $status, $headers);
     }
 
-    public function addFlashMessage($flash_type, $flash_content)
+    public function addFlashMessage(string $flash_type, string $flash_content)
     {
         $this->request->getSession()->getFlashBag()->add('message', [
             'type' => $flash_type,
@@ -78,17 +78,17 @@ abstract class Controller
         return $this;
     }
 
-    public function getPostData($field = null, $default = null)
+    public function getPostData(string $field = null, $default = null)
     {
         return empty($field) ? $this->body->all() : $this->body->get($field, $default);
     }
 
-    public function getQueryParam($field = null, $default = null)
+    public function getQueryParam(string $field = null, $default = null)
     {
         return empty($field) ? $this->params->all() : $this->params->get($field, $default);
     }
 
-    protected function validateBody($validatorClass, $method, $requiredKeys = [], $optionalKeys = [])
+    protected function validateBody($validatorClass, string $method, array $requiredKeys = [], array $optionalKeys = [])
     {
         $validator = call_user_func_array([$validatorClass, 'validator'], [$method, $requiredKeys, $optionalKeys]);
         $validator->assert($this->body->all());
