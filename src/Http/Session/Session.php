@@ -13,6 +13,11 @@ class Session extends SymfonySession
     private $request;
     private $response;
 
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
     public function setRequest(Request $request)
     {
         $this->request = $request;
