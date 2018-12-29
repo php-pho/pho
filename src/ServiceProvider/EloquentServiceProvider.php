@@ -9,6 +9,7 @@ use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\DatabaseManager;
 use Pho\Core\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
+use Illuminate\Events\Dispatcher;
 
 class EloquentServiceProvider implements ServiceProviderInterface
 {
@@ -29,8 +30,9 @@ class EloquentServiceProvider implements ServiceProviderInterface
 
         $def[Manager::class] = autowire()
             ->method('addConnection', get('db.connection'))
-            ->method('bootEloquent')
-            ->method('setAsGlobal');
+            ->method('setEventDispatcher', get(Dispatcher::class))
+            ->method('setAsGlobal')
+            ->method('bootEloquent');
         $def[DatabaseManager::class] = function (ContainerInterface $c) {
             return $c->get(Manager::class)->getDatabaseManager();
         };
