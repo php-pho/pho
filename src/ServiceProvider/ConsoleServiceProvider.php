@@ -1,12 +1,13 @@
 <?php
 namespace Pho\ServiceProvider;
 
-use Pho\Core\ServiceProviderInterface;
-use DI\ContainerBuilder;
-use Psr\Container\ContainerInterface;
-use Silly\Edition\PhpDi\Application;
 use function DI\get;
 use function DI\create;
+use DI\ContainerBuilder;
+use Pho\Core\ServiceProviderInterface;
+use Pho\Console\ConsoleKernel;
+use Psr\Container\ContainerInterface;
+use Silly\Edition\PhpDi\Application;
 
 class ConsoleServiceProvider implements ServiceProviderInterface
 {
@@ -15,8 +16,18 @@ class ConsoleServiceProvider implements ServiceProviderInterface
         $def = array_merge([
             'console.name' => 'Pho Console',
             'console.version' => '1.0.0',
-            'console.register_func' => null,
+            'kernel.class' => null,
+            'router.resource' => null,
+            'router.options' => [],
         ], $opts);
+
+        $def[ConsoleKernel::class] = function ($c) {
+            $kernelClass = $c->get('kernel.class');
+            $console_kernel = $c->get($kernelClass);
+            $console_kernel->commands();
+
+            return $console_kernel;
+        };
 
         $def[Application::class] = create()
             ->constructor(
@@ -24,6 +35,7 @@ class ConsoleServiceProvider implements ServiceProviderInterface
                 get('console.version'),
                 get(ContainerInterface::class)
             );
+
         $def['console'] = get(Application::class);
 
         $builder->addDefinitions($def);
