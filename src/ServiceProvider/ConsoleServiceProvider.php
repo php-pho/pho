@@ -17,8 +17,6 @@ class ConsoleServiceProvider implements ServiceProviderInterface
             'console.name' => 'Pho Console',
             'console.version' => '1.0.0',
             'kernel.class' => null,
-            'router.resource' => null,
-            'router.options' => [],
         ], $opts);
 
         $def[ConsoleKernel::class] = function ($c) {
