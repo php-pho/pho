@@ -7,15 +7,16 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Psr\Container\ContainerInterface;
 use Pho\Http\Session\Session;
 
 class SessionSubscriber implements EventSubscriberInterface
 {
-    private $session;
+    private $container;
 
-    public function __construct(Session $session)
+    public function __construct(ContainerInterface $container)
     {
-        $this->session = $session;
+        $this->container = $container;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -35,7 +36,7 @@ class SessionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $request->setSession($this->session);
+        $request->setSession($session);
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
@@ -53,7 +54,7 @@ class SessionSubscriber implements EventSubscriberInterface
 
             if (method_exists($session, 'setResponse')) {
                 $session->setResponse($response);
-                $this->session->save();
+                $session->save();
             }
 
             $response
@@ -73,6 +74,6 @@ class SessionSubscriber implements EventSubscriberInterface
 
     protected function getSession()
     {
-        return $this->session;
+        return $this->container->get(Session::class);
     }
 }
