@@ -11,13 +11,13 @@ class RedisServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'redis.host' => '127.0.0.1',
             'redis.port' => 6379,
             'redis.timeout' => 1,
             'redis.persistent' => false,
             'redis.database' => 0,
-        ], $opts);
+        ];
 
         $def[Redis::class] = function (ContainerInterface $container) {
             // Redis class reflection will be wrong so we define it manually way
@@ -32,6 +32,8 @@ class RedisServiceProvider implements ServiceProviderInterface
             return $redis;
         };
         $def['redis'] = get(Redis::class);
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

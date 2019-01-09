@@ -11,14 +11,16 @@ class PredisServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'predis.connection' => 'tcp://127.0.0.1:6379',
-        ], $opts);
+        ];
 
         $def[Client::class] = autowire()
             ->constructor(get('predis.connection'));
         $def['predis'] = get(Client::class);
         $def['redis'] = get(Client::class);
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

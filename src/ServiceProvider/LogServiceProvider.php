@@ -13,11 +13,11 @@ class LogServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'logger.name' => 'Pho',
             'logger.stream' => false,
             'logger.level' => Logger::DEBUG,
-        ], $opts);
+        ];
 
         $def['logger.handler'] = autowire(StreamHandler::class)
             ->constructor(get('logger.stream'), get('logger.level'));
@@ -25,6 +25,8 @@ class LogServiceProvider implements ServiceProviderInterface
             ->constructor(get('logger.name'))
             ->method('pushHandler', get('logger.handler'));
         $def['logger'] = get(LoggerInterface::class);
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

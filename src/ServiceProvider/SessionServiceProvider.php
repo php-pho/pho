@@ -20,13 +20,13 @@ class SessionServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'session.hmac_secret' => '',
             HmacCookieSessionStorage::class => create()->constructor(get('session.hmac_secret')),
             SessionStorageInterface::class => get(HmacCookieSessionStorage::class),
             AttributeBagInterface::class => value(null),
             FlashBagInterface::class => value(null),
-        ], $opts);
+        ];
 
         $def[Session::class] = create()
             ->constructor(
@@ -39,6 +39,8 @@ class SessionServiceProvider implements ServiceProviderInterface
 
             return $kernel;
         });
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

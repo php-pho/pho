@@ -13,11 +13,11 @@ class ConsoleServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $builder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'console.name' => 'Pho Console',
             'console.version' => '1.0.0',
             'kernel.class' => null,
-        ], $opts);
+        ];
 
         $def[ConsoleKernel::class] = function ($c) {
             $kernelClass = $c->get('kernel.class');
@@ -35,6 +35,8 @@ class ConsoleServiceProvider implements ServiceProviderInterface
             );
 
         $def['console'] = get(Application::class);
+
+        $def = array_merge($def, $opts);
 
         $builder->addDefinitions($def);
     }

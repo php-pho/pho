@@ -8,10 +8,12 @@ class PhoServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'DEBUG' => false,
             'CHARSET' => 'utf-8',
-        ], $opts);
+        ];
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

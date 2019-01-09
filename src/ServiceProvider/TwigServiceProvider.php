@@ -14,16 +14,18 @@ class TwigServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'twig.path' => null,
             'twig.options' => [],
-        ], $opts);
+        ];
 
         $def[Twig_LoaderInterface::class] = autowire(Twig_Loader_Filesystem::class)
             ->method('addPath', get('twig.path'));
         $def[Twig_Environment::class] = autowire()
             ->constructor(get(Twig_LoaderInterface::class), get('twig.options'));
         $def['twig'] = get(Twig_Environment::class);
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

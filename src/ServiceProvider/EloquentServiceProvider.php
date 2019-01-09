@@ -15,7 +15,7 @@ class EloquentServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'db.connection' => [
                 'driver' => 'mysql',
                 'host' => 'localhost',
@@ -26,7 +26,7 @@ class EloquentServiceProvider implements ServiceProviderInterface
                 'collation' => 'utf8_unicode_ci',
                 'prefix' => null,
             ],
-        ], $opts);
+        ];
 
         $def[Manager::class] = autowire()
             ->method('addConnection', get('db.connection'))
@@ -38,6 +38,8 @@ class EloquentServiceProvider implements ServiceProviderInterface
         };
         $def['capsule'] = get(Manager::class);
         $def['db'] = get(DatabaseManager::class);
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }

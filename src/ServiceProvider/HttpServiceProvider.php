@@ -39,11 +39,11 @@ class HttpServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-        $def = array_merge([
+        $def = [
             'kernel.class' => null,
             'router.resource' => null,
             'router.options' => [],
-        ], $opts);
+        ];
 
         $def['http.request'] = function () {
             return Request::createFromGlobals();
@@ -102,6 +102,8 @@ class HttpServiceProvider implements ServiceProviderInterface
             $twig->addExtension($c->get(RoutingExtension::class));
             return $twig;
         });
+
+        $def = array_merge($def, $opts);
 
         $containerBuilder->addDefinitions($def);
     }
