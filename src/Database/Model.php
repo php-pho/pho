@@ -13,6 +13,8 @@ class Model extends EloquentModel {
 
     protected function getTypeByKey(string $key)
     {
+        $key = static::class.'::'.$key;
+
         if (!isset(static::$key_types[$key])) {
             if ($this->hasGetMutator($key)) {
                 static::$key_types[$key] = static::KEY_TYPE_MUTATOR;
