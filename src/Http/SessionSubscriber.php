@@ -32,7 +32,7 @@ class SessionSubscriber implements EventSubscriberInterface
             $session->setRequest($request);
         }
 
-        if (null === $this->session || $request->hasSession()) {
+        if ($request->hasSession()) {
             return;
         }
 
