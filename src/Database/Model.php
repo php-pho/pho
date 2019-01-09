@@ -13,21 +13,21 @@ class Model extends EloquentModel {
 
     protected function getTypeByKey(string $key)
     {
-        $key = static::class.'::'.$key;
+        $type_key = static::class.'::'.$key;
 
-        if (!isset(static::$key_types[$key])) {
+        if (!isset(static::$key_types[$type_key])) {
             if ($this->hasGetMutator($key)) {
-                static::$key_types[$key] = static::KEY_TYPE_MUTATOR;
+                static::$key_types[$type_key] = static::KEY_TYPE_MUTATOR;
             } elseif ($this->hasCast($key)) {
-                static::$key_types[$key] = static::KEY_TYPE_CAST;
+                static::$key_types[$type_key] = static::KEY_TYPE_CAST;
             } elseif (in_array($key, $this->getDates())) {
-                static::$key_types[$key] = static::KEY_TYPE_DATETIME;
+                static::$key_types[$type_key] = static::KEY_TYPE_DATETIME;
             } else {
-                static::$key_types[$key] = static::KEY_TYPE_RAW;
+                static::$key_types[$type_key] = static::KEY_TYPE_RAW;
             }
         }
 
-        return static::$key_types[$key];
+        return static::$key_types[$type_key];
     }
 
     public function getAttribute($key)
