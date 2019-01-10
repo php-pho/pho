@@ -32,8 +32,6 @@ class ControllerResolver extends SymfonyControllerResolver
 
     public function instantiateController($class)
     {
-        $controller = $this->container->get($class);
-
-        return $controller;
+        return $this->container->get($class);
     }
 }
