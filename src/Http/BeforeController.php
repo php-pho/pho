@@ -15,7 +15,8 @@ class BeforeController
         $this->controller = $controller;
     }
 
-    public function getController() {
+    public function getController()
+    {
         return $this->controller;
     }
 

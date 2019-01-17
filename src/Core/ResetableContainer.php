@@ -6,7 +6,8 @@ use DI\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Invoker\InvokerInterface;
 
-class ResetableContainer extends Container {
+class ResetableContainer extends Container
+{
     public function reset()
     {
         $this->resolvedEntries = [

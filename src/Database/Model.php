@@ -3,7 +3,8 @@ namespace Pho\Database;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
-class Model extends EloquentModel {
+class Model extends EloquentModel
+{
     public static $key_types = [];
     
     public const KEY_TYPE_RAW = 1;

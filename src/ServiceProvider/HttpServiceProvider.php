@@ -94,11 +94,11 @@ class HttpServiceProvider implements ServiceProviderInterface
             );
         $def[ArgumentResolverInterface::class] = autowire(ArgumentResolver::class)
             ->constructorParameter('argumentMetadataFactory', get(ArgumentMetadataFactoryInterface::class));
-        $def[ArgumentMetadataFactoryInterface::class] = function(ContainerInterface $c) {
-            return new DecoratedArgumentMetadataFactory(new ArgumentMetadataFactory()); 
-        };            
+        $def[ArgumentMetadataFactoryInterface::class] = function (ContainerInterface $c) {
+            return new DecoratedArgumentMetadataFactory(new ArgumentMetadataFactory());
+        };
         $def[RequestContext::class] = autowire()->method('fromRequest', get('http.request'));
-        $def[Twig_Environment::class] = decorate(function(Twig_Environment $twig, ContainerInterface $c) {
+        $def[Twig_Environment::class] = decorate(function (Twig_Environment $twig, ContainerInterface $c) {
             $twig->addExtension($c->get(RoutingExtension::class));
             return $twig;
         });

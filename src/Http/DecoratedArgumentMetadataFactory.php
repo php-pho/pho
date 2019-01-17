@@ -9,7 +9,8 @@ class DecoratedArgumentMetadataFactory implements ArgumentMetadataFactoryInterfa
 {
     private $factory;
 
-    public function __construct(ArgumentMetadataFactory $factory) {
+    public function __construct(ArgumentMetadataFactory $factory)
+    {
         $this->factory = $factory;
     }
 
