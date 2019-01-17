@@ -7,10 +7,10 @@ class Model extends EloquentModel
 {
     public static $key_types = [];
     
-    public const KEY_TYPE_RAW = 1;
-    public const KEY_TYPE_MUTATOR = 2;
-    public const KEY_TYPE_CAST = 3;
-    public const KEY_TYPE_DATETIME = 4;
+    protected const KEY_TYPE_RAW = 1;
+    protected const KEY_TYPE_MUTATOR = 2;
+    protected const KEY_TYPE_CAST = 3;
+    protected const KEY_TYPE_DATETIME = 4;
 
     protected function getTypeByKey(string $key)
     {
