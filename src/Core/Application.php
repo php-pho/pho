@@ -40,7 +40,7 @@ class Application
         $program = array_shift($args);
 
         if (!method_exists($program, 'run')) {
-            throw new \RuntimeException(sprintf("Program '%' doesn't have 'run' method.", $program));
+            throw new \RuntimeException(sprintf("Program '%s' doesn't have 'run' method.", $program));
         }
 
         $container = $this->container ?: $this->buildContainer();
