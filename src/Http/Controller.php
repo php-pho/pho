@@ -54,21 +54,21 @@ abstract class Controller
         return $this->redirect($endpoint, $status, $headers);
     }
 
-    public function redirectWithFlash(string $named_route, array $params = [], string $flash_type, string $flash_content)
+    protected function redirectWithFlash(string $named_route, array $params = [], string $flash_type, string $flash_content)
     {
         $this->addFlashMessage($flash_type, $flash_content);
 
         return $this->redirectFor($named_route, $params);
     }
 
-    public function render(string $template, array $data = [], int $status = 200, array $headers = [])
+    protected function render(string $template, array $data = [], int $status = 200, array $headers = [])
     {
         $content = $this->container->get('twig')->render($template, $data);
 
         return new Response($content, $status, $headers);
     }
 
-    public function addFlashMessage(string $flash_type, string $flash_content)
+    protected function addFlashMessage(string $flash_type, string $flash_content)
     {
         $this->request->getSession()->getFlashBag()->add('message', [
             'type' => $flash_type,
@@ -78,12 +78,12 @@ abstract class Controller
         return $this;
     }
 
-    public function getPostData(string $field = null, $default = null)
+    protected function getPostData(string $field = null, $default = null)
     {
         return empty($field) ? $this->body->all() : $this->body->get($field, $default);
     }
 
-    public function getQueryParam(string $field = null, $default = null)
+    protected function getQueryParam(string $field = null, $default = null)
     {
         return empty($field) ? $this->params->all() : $this->params->get($field, $default);
     }
