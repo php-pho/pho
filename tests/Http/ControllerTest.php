@@ -64,6 +64,13 @@ class ControllerTest extends TestCase {
         $this->assertEquals(new RedirectResponse('/hello'), $result);
     }
 
+    protected function removeHeaderDateFromResponse($response) {
+        if ($response instanceof Response) {
+            $response->headers->remove('date');
+        }
+        return $response;
+    }
+
     /**
      * @dataProvider dataProvider
      */
@@ -77,7 +84,10 @@ class ControllerTest extends TestCase {
         $controller->setRequest($request);
         $result = $controller->proxyCall($method, $params);
 
-        $this->assertEquals($expected, $result);
+        $this->assertEquals(
+            $this->removeHeaderDateFromResponse($expected),
+            $this->removeHeaderDateFromResponse($result)
+        );
     }
 
     public function dataProvider() {
