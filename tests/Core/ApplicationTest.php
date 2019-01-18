@@ -36,10 +36,6 @@ class DumbServiceProvider implements ServiceProviderInterface {
 }
 
 class ApplicationTest extends TestCase {
-    protected function containerDefinations() {
-        return [];
-    }
-
     public function testContainer() {
         $app = new Application(new ContainerBuilder());
         $dump_service_provider = new DumbServiceProvider();

@@ -11,9 +11,16 @@ abstract class TestCase extends PHPUnitTestCase {
     public function setUp() {
         $builder = new ContainerBuilder($this->container_class);
         $builder->useAutowiring(true);
+        $this->registerServiceProviders($builder);
         $builder->addDefinitions($this->containerDefinations());
         $this->container = $builder->build();
     }
 
-    abstract protected function containerDefinations();
+    protected function containerDefinations() {
+        return [];
+    }
+
+    protected function registerServiceProviders($builder) {
+        // Nothing here
+    }
 }

@@ -5,10 +5,6 @@ use Pho\Core\ContainerBuilderFactory;
 use PHPUnit\Framework\Assert;
 
 class ContainerBuilderFactoryTest extends TestCase {
-    protected function containerDefinations() {
-        return [];
-    }
-
     public function dataEnvironments() {
         return [
             ['development', [], true, false, null, null, 'DI\Container'],

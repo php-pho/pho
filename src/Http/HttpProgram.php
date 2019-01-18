@@ -17,8 +17,9 @@ class HttpProgram implements ProgramInterface
     public function run()
     {
         $request = $this->container->get('http.request');
-        $response = $this->container->call([Kernel::class, 'handle'], [$request]);
+        $kernel = $this->container->get(Kernel::class);
+        $response = $kernel->handle($request);
         $response->send();
-        $this->container->call([Kernel::class, 'terminate'], [$request, $response]);
+        $kernel->terminate($request, $response);
     }
 }
