@@ -23,7 +23,6 @@ class JsonController extends Controller
         }
 
         $this->body = new ParameterBag($body);
-        $this->params = $request->query;
     }
 
     protected function jsonValue(string $key, bool $required = false, $default = null)
