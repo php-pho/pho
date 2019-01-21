@@ -20,6 +20,9 @@ use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Pho\Http\MiddlewareSubscriber;
+use Pho\Http\SessionSubscriber;
+use Pho\ServiceProvider\SessionServiceProvider;
 
 class HttpProgramTestKernel extends Kernel {
     public function stacks() {}
@@ -30,7 +33,11 @@ class HttpProgramTestRouter extends RouteLoader {
     public function routes(Routing $routing) {
         $routing->get('/hello', function() {
             return new Response('world');
-        }, 'hello');
+        }, 'hello', [
+            '_before' => function (Request $request) {
+                $request->attributes->set('before_controller', true);
+            }
+        ]);
     }
 }
 
@@ -70,6 +77,11 @@ class HttpKernelTest extends TestCase {
             },
             RouteLoader::class => autowire(HttpProgramTestRouter::class),
         ]);
+
+        $session_service_provider = new SessionServiceProvider();
+        $session_service_provider->register($builder, [
+            'session.hmac_secret' => 'secret',
+        ]);
     }
 
     public function testHttpKernel() {
@@ -97,6 +109,28 @@ class HttpKernelTest extends TestCase {
         $kernel->terminate($request, $response);
         $this->assertEquals(true, $request->attributes->get('terminated', false));
         $this->assertEquals(true, $request->attributes->get('terminated_by_subscriber', false));
+    }
+
+    public function testMiddlewareSubscriber() {
+        $kernel = $this->container->make(Kernel::class);
+        $kernel->subscribe(MiddlewareSubscriber::class);
+
+        $request = $this->container->get('http.request');
+        $response = $kernel->handle($request);
+
+        $this->assertEquals(true, $request->attributes->get('before_controller', false));
+    }
+
+    public function testSessionSubscriber() {
+        $kernel = $this->container->make(Kernel::class);
+
+        $request = Request::create('http://example.site/path', 'GET', [], [
+            'PHO_SESSION' => 'YToxOntzOjE1OiJfc2YyX2F0dHJpYnV0ZXMiO2E6MTp7czo1OiJoZWxsbyI7czo1OiJ3b3JsZCI7fX0=|f75aac88e70269ce86bff907bac3468a5f393249610c95fea752992969bad8b1',
+        ]);
+        $response = $kernel->handle($request);
+        $session = $request->getSession();
+
+        $this->assertEquals('world', $session->get('hello'));
     }
 
     public function testHttpProgram() {
