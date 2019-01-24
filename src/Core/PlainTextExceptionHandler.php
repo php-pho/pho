@@ -5,14 +5,60 @@ use Symfony\Component\Debug\ExceptionHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 
 class PlainTextExceptionHandler extends ExceptionHandler {
+    private $debug;
+    private $charset;
+    private $fileLinkFormat;
+
+    public function __construct(bool $debug = true, string $charset = null, $fileLinkFormat = null)
+    {
+        $this->debug = $debug;
+        $this->charset = $charset ?: ini_get('default_charset') ?: 'UTF-8';
+        $this->fileLinkFormat = $fileLinkFormat;
+    }
+
     public function getHtml($exception) {
-        $html = parent::getHtml($exception);
-        $pos1 = strpos($html, '<body>');
-        $pos2 = strpos($html, '</body>');
+        if (!$exception instanceof FlattenException) {
+            $exception = FlattenException::create($exception);
+        }
 
-        $stripped = strip_tags(substr($html, $pos1 + 6, $pos2 - $pos1 - 6));
-        $trimmed = trim(preg_replace('/ +/', ' ', $stripped));
+        switch ($exception->getStatusCode()) {
+            case 404:
+                $title = 'Sorry, the page you are looking for could not be found.';
+                break;
+            default:
+                $title = 'Whoops, looks like something went wrong.';
+        }
 
-        return preg_replace('/(?:(?:\r\n|\r|\n)\s*){2}/s', "\n\n", $trimmed);
+        if (!$this->debug) {
+            return $title;
+        }
+
+        $content = '';
+        try {
+            $count = \count($exception->getAllPrevious());
+            $total = $count + 1;
+            foreach ($exception->toArray() as $position => $e) {
+                $ind = $count - $position + 1;
+                $content .= sprintf("\n[%d/%d] %s : %s", $ind, $total, $e['class'], $e['message']);
+                foreach ($e['trace'] as $trace) {
+                    if ($trace['function']) {
+                        $content .= sprintf("\n\t- at %s %s %s", $trace['class'], $trace['type'], $trace['function']);
+                    }
+                    if (isset($trace['file']) && isset($trace['line'])) {
+                        $content .= sprintf(" in %s:%d", $trace['file'], $trace['line']);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // something nasty happened and we cannot throw an exception anymore
+            if ($this->debug) {
+                $e = FlattenException::create($e);
+                $title = sprintf('Exception thrown when handling an exception (%s: %s)', $e->getClass(), $e->getMessage());
+            } else {
+                $title = 'Whoops, looks like something went wrong.';
+            }
+            return $title;
+        }
+        return $content;
     }
 }
