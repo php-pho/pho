@@ -87,7 +87,7 @@ class HmacCookieSessionStorage implements SessionStorageInterface
 
         foreach ($this->bags as $bag) {
             $key = $bag->getStorageKey();
-            $sessionData[$key] = $bag->all();
+            $sessionData[$key] = $bag->getBag()->all();
         }
 
         $sessionString = base64_encode(serialize($sessionData));
