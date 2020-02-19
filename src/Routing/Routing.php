@@ -30,7 +30,7 @@ class Routing
         return $this;
     }
 
-    public function map(string $method, string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function map(string $method, string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         $defaults['_controller'] = $handler;
         $route = (new Route($path, $defaults, $requirements, $options))->setMethods(explode('|', $method));
@@ -39,37 +39,37 @@ class Routing
         return $this;
     }
 
-    public function get(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function get(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('GET', $path, $handler, $name, $defaults, $requirements, $options);
     }
 
-    public function post(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function post(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('POST', $path, $handler, $name, $defaults, $requirements, $options);
     }
 
-    public function put(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function put(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('PUT', $path, $handler, $name, $defaults, $requirements, $options);
     }
 
-    public function patch(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function patch(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('PATCH', $path, $handler, $name, $defaults, $requirements, $options);
     }
 
-    public function delete(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function delete(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('DELETE', $path, $handler, $name, $defaults, $requirements, $options);
     }
 
-    public function head(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function head(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('HEAD', $path, $handler, $name, $defaults, $requirements, $options);
     }
 
-    public function options(string $path, $handler, string $name, array $defaults = [], array $requirements = [], array $options = []): self
+    public function options(string $path, $handler, ?string $name = null, array $defaults = [], array $requirements = [], array $options = []): self
     {
         return $this->map('OPTIONS', $path, $handler, $name, $defaults, $requirements, $options);
     }
