@@ -34,7 +34,7 @@ class Routing
     {
         $defaults['_controller'] = $handler;
         $route = (new Route($path, $defaults, $requirements, $options))->setMethods(explode('|', $method));
-        $this->collection->add($name, $route);
+        $this->collection->add($name ?: $path, $route);
 
         return $this;
     }
