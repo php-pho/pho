@@ -8,9 +8,16 @@ class Routing
 {
     private $collection;
 
+    private $prefixName = '';
+
     public function __construct(RouteCollection $collection = null)
     {
         $this->collection = $collection ?: new RouteCollection();
+    }
+
+    protected function setPrefixName(string $prefixName)
+    {
+        $this->prefixName = $prefixName;
     }
 
     public function getRouteCollection()
@@ -21,6 +28,7 @@ class Routing
     public function group($prefix, callable $groupCallback, array $defaults = []): self
     {
         $childRouter = new static();
+        $childRouter->setPrefixName('/' . trim($this->prefixName . '/' . $prefix, '/'));
         $childRouteCollection = $childRouter->getRouteCollection();
         call_user_func_array($groupCallback, [$childRouter]);
         $childRouteCollection->addPrefix($prefix);
@@ -34,7 +42,7 @@ class Routing
     {
         $defaults['_controller'] = $handler;
         $route = (new Route($path, $defaults, $requirements, $options))->setMethods(explode('|', $method));
-        $this->collection->add($name ?: $path, $route);
+        $this->collection->add($name ?: strtolower($method) . ':' . $this->prefixName . $path, $route);
 
         return $this;
     }
