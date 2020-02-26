@@ -1,4 +1,5 @@
 <?php
+
 namespace Pho\Console;
 
 use Psr\Container\ContainerInterface;
@@ -6,8 +7,8 @@ use Silly\Edition\PhpDi\Application;
 
 abstract class ConsoleKernel
 {
-    private $container;
-    private $app;
+    protected $container;
+    protected $app;
 
     public function __construct(ContainerInterface $container, Application $app)
     {
@@ -20,7 +21,7 @@ abstract class ConsoleKernel
         $this->app->command($expression, $callable, $aliases);
     }
 
-    public function run() : int
+    public function run(): int
     {
         return $this->app->run();
     }
