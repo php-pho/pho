@@ -4,7 +4,6 @@ namespace Pho\Console;
 
 use Pho\Core\ProgramInterface;
 use Psr\Container\ContainerInterface;
-use Silly\Edition\PhpDi\Application;
 
 class ConsoleProgram implements ProgramInterface
 {
