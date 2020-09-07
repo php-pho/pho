@@ -6,6 +6,7 @@ use function DI\autowire;
 use function DI\get;
 use Twig_Environment;
 use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface;
 use DI\ContainerBuilder;
 use Pho\Core\ServiceProviderInterface;
@@ -19,7 +20,7 @@ class TwigServiceProvider implements ServiceProviderInterface
             'twig.options' => [],
         ];
 
-        $def[LoaderInterface::class] = autowire(LoaderInterface::class)
+        $def[LoaderInterface::class] = autowire(FilesystemLoader::class)
             ->method('addPath', get('twig.path'));
         $def[Environment::class] = autowire()
             ->constructor(get(LoaderInterface::class), get('twig.options'));
