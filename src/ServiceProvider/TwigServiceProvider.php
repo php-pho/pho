@@ -1,14 +1,14 @@
 <?php
+
 namespace Pho\ServiceProvider;
 
 use function DI\autowire;
 use function DI\get;
 use Twig_Environment;
-use Twig_LoaderInterface;
-use Twig_Loader_Filesystem;
+use Twig\Environment;
+use Twig\Loader\LoaderInterface;
 use DI\ContainerBuilder;
 use Pho\Core\ServiceProviderInterface;
-use Symfony\Bridge\Twig\Extension\RoutingExtension;
 
 class TwigServiceProvider implements ServiceProviderInterface
 {
@@ -19,11 +19,12 @@ class TwigServiceProvider implements ServiceProviderInterface
             'twig.options' => [],
         ];
 
-        $def[Twig_LoaderInterface::class] = autowire(Twig_Loader_Filesystem::class)
+        $def[LoaderInterface::class] = autowire(LoaderInterface::class)
             ->method('addPath', get('twig.path'));
-        $def[Twig_Environment::class] = autowire()
-            ->constructor(get(Twig_LoaderInterface::class), get('twig.options'));
-        $def['twig'] = get(Twig_Environment::class);
+        $def[Environment::class] = autowire()
+            ->constructor(get(LoaderInterface::class), get('twig.options'));
+        $def[Twig_Environment::class] = get(Environment::class);
+        $def['twig'] = get(Environment::class);
 
         $def = array_merge($def, $opts);
 
