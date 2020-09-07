@@ -25,7 +25,7 @@ class Routing
         return $this->collection;
     }
 
-    public function group($prefix, callable $groupCallback, array $defaults = []): self
+    public function group($prefix, callable $groupCallback, array $defaults = [], array $requirements = []): self
     {
         $childRouter = new static();
         $childRouter->setPrefixName('/' . trim($this->prefixName . '/' . $prefix, '/'));
@@ -33,6 +33,7 @@ class Routing
         call_user_func_array($groupCallback, [$childRouter]);
         $childRouteCollection->addPrefix($prefix);
         $childRouteCollection->addDefaults($defaults);
+        $childRouteCollection->addRequirements($requirements);
         $this->collection->addCollection($childRouteCollection);
 
         return $this;
