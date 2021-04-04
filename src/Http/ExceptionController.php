@@ -5,6 +5,7 @@ namespace Pho\Http;
 use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionController
 {
@@ -31,6 +32,10 @@ class ExceptionController
         $handler->handleException($exception);
         $response = ob_get_clean();
 
-        return new Response($response, $exception->getStatusCode(), $exception->getHeaders());
+        if ($exception instanceof HttpExceptionInterface) {
+            return new Response($response, $exception->getStatusCode(), $exception->getHeaders());
+        }
+
+        return new Response($response, 500);
     }
 }
