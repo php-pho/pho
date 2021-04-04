@@ -2,38 +2,37 @@
 
 namespace Pho\ServiceProvider;
 
-use function DI\autowire;
-use function DI\get;
-use function DI\decorate;
-use Twig_Environment;
 use DI\ContainerBuilder;
 use Pho\Core\ServiceProviderInterface;
+use Pho\Http\DecoratedArgumentMetadataFactory;
 use Pho\Http\ExceptionController;
+use Pho\Http\Kernel;
 use Pho\Http\MiddlewareSubscriber;
+use Pho\Routing\ControllerResolver;
+use Pho\Routing\RouteLoader;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Debug\ExceptionHandler;
+use Symfony\Bridge\Twig\Extension\RoutingExtension;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface;
-use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
+use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
+use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory;
+use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactoryInterface;
+use Symfony\Component\HttpKernel\EventListener\ErrorListener;
+use Symfony\Component\HttpKernel\EventListener\RouterListener;
+use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Router;
-use Pho\Http\Kernel;
-use Symfony\Component\HttpKernel\EventListener\RouterListener;
-use Pho\Routing\ControllerResolver;
-use Pho\Routing\RouteLoader;
-use Symfony\Bridge\Twig\Extension\RoutingExtension;
-use Symfony\Component\HttpKernel\HttpKernel;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Pho\Http\DecoratedArgumentMetadataFactory;
-use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactoryInterface;
-use function DI\create;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
-use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadataFactory;
+use Twig\Environment;
+use function DI\autowire;
+use function DI\decorate;
+use function DI\get;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
@@ -48,20 +47,19 @@ class HttpServiceProvider implements ServiceProviderInterface
         $def['http.request'] = function () {
             return Request::createFromGlobals();
         };
-        $def[ExceptionListener::class] = autowire()
+        $def[ErrorListener::class] = autowire()
             ->constructor(
                 get(ExceptionController::class),
                 get(LoggerInterface::class),
-                get('DEBUG'),
-                get('CHARSET')
+                get('DEBUG')
             );
-        $def[ExceptionHandler::class] = autowire()
+        $def[ErrorHandler::class] = autowire()
             ->constructor(
-                get('DEBUG'),
-                get('CHARSET')
+                null,
+                get('DEBUG')
             );
         $def[EventDispatcherInterface::class] = autowire(EventDispatcher::class)
-            ->method('addSubscriber', get(ExceptionListener::class))
+            ->method('addSubscriber', get(ErrorListener::class))
             ->method('addSubscriber', get(MiddlewareSubscriber::class));
         $def[ControllerResolverInterface::class] = autowire(ControllerResolver::class);
         $def[Router::class] = autowire()
@@ -98,7 +96,7 @@ class HttpServiceProvider implements ServiceProviderInterface
             return new DecoratedArgumentMetadataFactory(new ArgumentMetadataFactory());
         };
         $def[RequestContext::class] = autowire()->method('fromRequest', get('http.request'));
-        $def[Twig_Environment::class] = decorate(function (Twig_Environment $twig, ContainerInterface $c) {
+        $def[Environment::class] = decorate(function (Environment $twig, ContainerInterface $c) {
             $twig->addExtension($c->get(RoutingExtension::class));
             return $twig;
         });

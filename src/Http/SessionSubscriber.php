@@ -1,14 +1,13 @@
 <?php
+
 namespace Pho\Http;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Psr\Container\ContainerInterface;
 use Pho\Http\Session\Session;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 class SessionSubscriber implements EventSubscriberInterface
 {
@@ -19,7 +18,7 @@ class SessionSubscriber implements EventSubscriberInterface
         $this->container = $container;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -39,7 +38,7 @@ class SessionSubscriber implements EventSubscriberInterface
         $request->setSession($session);
     }
 
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(ResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -53,7 +52,7 @@ class SessionSubscriber implements EventSubscriberInterface
             $response = $event->getResponse();
 
             if (method_exists($session, 'setResponse')) {
-                $session->setResponse($response);
+                call_user_func([$session, 'setResponse'], $response);
                 $session->save();
             }
 
@@ -66,10 +65,10 @@ class SessionSubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::REQUEST => array('onKernelRequest', 128),
-            KernelEvents::RESPONSE => array('onKernelResponse', -1000),
-        );
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', 128],
+            KernelEvents::RESPONSE => ['onKernelResponse', -1000],
+        ];
     }
 
     protected function getSession()

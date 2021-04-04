@@ -1,12 +1,16 @@
 <?php
+
 namespace Pho\Core;
 
-use Symfony\Component\Debug\ExceptionHandler;
-use Symfony\Component\Debug\Exception\FlattenException;
+use Symfony\Component\ErrorHandler\ErrorHandler;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 
-class PlainTextExceptionHandler extends ExceptionHandler {
+class PlainTextExceptionHandler extends ErrorHandler
+{
     private $debug;
+
     private $charset;
+
     private $fileLinkFormat;
 
     public function __construct(bool $debug = true, string $charset = null, $fileLinkFormat = null)
@@ -16,7 +20,8 @@ class PlainTextExceptionHandler extends ExceptionHandler {
         $this->fileLinkFormat = $fileLinkFormat;
     }
 
-    public function getHtml($exception) {
+    public function getHtml($exception)
+    {
         if (!$exception instanceof FlattenException) {
             $exception = FlattenException::create($exception);
         }

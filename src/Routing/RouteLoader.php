@@ -1,4 +1,5 @@
 <?php
+
 namespace Pho\Routing;
 
 use Symfony\Component\Config\Loader\Loader;
@@ -11,7 +12,7 @@ abstract class RouteLoader extends Loader
         $routes = new RouteCollection();
         $routing = new Routing($routes);
         $this->routes($routing);
-        
+
         return $routes;
     }
 

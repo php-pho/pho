@@ -1,13 +1,14 @@
 <?php
+
 namespace Pho\ServiceProvider;
 
-use function DI\autowire;
-use function DI\get;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Pho\Core\ServiceProviderInterface;
 use Psr\Log\LoggerInterface;
+use function DI\autowire;
+use function DI\get;
 
 class LogServiceProvider implements ServiceProviderInterface
 {

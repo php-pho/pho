@@ -2,18 +2,21 @@
 
 use Pho\TestCase;
 
-class ResetableContainerTest extends TestCase {
+class ResetableContainerTest extends TestCase
+{
     protected $container_class = 'Pho\Core\ResetableContainer';
 
-    protected function containerDefinations() {
+    protected function containerDefinations()
+    {
         return [
-            'random' => function() {
+            'random' => function () {
                 return rand(0, 999999999);
             },
         ];
     }
 
-    public function testReset() {
+    public function testReset()
+    {
         $old = $this->container->get('random');
         $same = $this->container->get('random');
         $this->container->reset();

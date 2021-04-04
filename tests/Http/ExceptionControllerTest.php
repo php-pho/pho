@@ -1,13 +1,15 @@
 <?php
 
-use Pho\TestCase;
 use Pho\Http\ExceptionController;
+use Pho\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ExceptionControllerTest extends TestCase {
-    public function testInvoke() {
+class ExceptionControllerTest extends TestCase
+{
+    public function testInvoke()
+    {
         $exception = new NotFoundHttpException('uhoh');
         $controller = $this->container->make(ExceptionController::class);
         $request = Request::create('http://example.site/path', 'GET');
@@ -17,6 +19,6 @@ class ExceptionControllerTest extends TestCase {
         $result = $controller();
         $this->assertInstanceOf(Response::class, $result);
         $this->assertEquals(404, $result->getStatusCode());
-        $this->assertContains('NotFoundHttpException', $result->getContent());
+        $this->assertStringContainsString('NotFoundHttpException', $result->getContent());
     }
 }

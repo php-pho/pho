@@ -1,22 +1,24 @@
 <?php
 
+use Pho\Http\BeforeController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Pho\Http\BeforeController;
 
-class BeforeControllerTest extends TestCase {
+class BeforeControllerTest extends TestCase
+{
     /**
      * @dataProvider dataProvider
      */
-    public function testBeforeController($expected, $before) {
+    public function testBeforeController($expected, $before)
+    {
         $request = Request::create('http://example.site/path', 'GET');
         $controller = function (Request $req) {
             return new Response('hello');
         };
         $beforeController = new BeforeController($before, $controller);
         $beforeController->setRequest($request);
-        
+
         $this->assertSame($controller, $beforeController->getController());
 
         $response = $beforeController($request);
@@ -25,7 +27,8 @@ class BeforeControllerTest extends TestCase {
         $this->assertEquals($expected, $response->getContent());
     }
 
-    public function dataProvider() {
+    public function dataProvider()
+    {
         return [
             [
                 'hello', function (Request $req) {

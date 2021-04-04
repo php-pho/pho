@@ -1,14 +1,16 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Pho\Http\Session\HmacCookieSessionStorage;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\SessionBagProxy;
 
-class HmacCookieSessionStorageTest extends TestCase {
-    public function testSaveStorage() {
+class HmacCookieSessionStorageTest extends TestCase
+{
+    public function testSaveStorage()
+    {
         $storage = new HmacCookieSessionStorage('secret');
         $request = Request::create('http://example.site/path', 'GET');
         $response = new Response('content here');
@@ -22,7 +24,8 @@ class HmacCookieSessionStorageTest extends TestCase {
         // bag
         $data = [];
         $attributeBag = new AttributeBag();
-        $bag = new SessionBagProxy($attributeBag, $data, $usageIndex);
+        $bag = new SessionBagProxy($attributeBag, $data, $usageIndex, function () {
+        });
         $storage->registerBag($bag);
         $storage->setMetadataBag();
 
@@ -32,8 +35,8 @@ class HmacCookieSessionStorageTest extends TestCase {
         $this->assertEquals(true, $storage->isStarted());
 
         // set session value
-        $bag->getBag()->set('hello', 'world');
-        
+        $attributeBag->set('hello', 'world');
+
         // save
         $storage->save();
         $cookies = $response->headers->getCookies();
@@ -45,7 +48,8 @@ class HmacCookieSessionStorageTest extends TestCase {
         );
     }
 
-    public function testLoad() {
+    public function testLoad()
+    {
         $storage = new HmacCookieSessionStorage('secret');
         $request = Request::create('http://example.site/path', 'GET', [], [
             'PHO_SESS' => 'YToxOntzOjE1OiJfc2YyX2F0dHJpYnV0ZXMiO2E6MTp7czo1OiJoZWxsbyI7czo1OiJ3b3JsZCI7fX0=|f75aac88e70269ce86bff907bac3468a5f393249610c95fea752992969bad8b1',
@@ -53,15 +57,16 @@ class HmacCookieSessionStorageTest extends TestCase {
         $response = new Response('content here');
         $data = [];
         $attributeBag = new AttributeBag();
-        $bag = new SessionBagProxy($attributeBag, $data, $usageIndex);
+        $bag = new SessionBagProxy($attributeBag, $data, $usageIndex, function () {
+        });
         $storage->setRequest($request);
         $storage->setResponse($response);
         $storage->setName('PHO_SESS');
         $storage->registerBag($bag);
         $storage->setMetadataBag();
         $storage->start();
-        
+
         $this->assertEquals(true, $storage->isStarted());
-        $this->assertEquals('world', $bag->getBag()->get('hello'));
+        $this->assertEquals('world', $attributeBag->get('hello'));
     }
 }

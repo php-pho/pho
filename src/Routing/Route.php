@@ -11,8 +11,8 @@
 
 namespace Pho\Routing;
 
-use Symfony\Component\Routing\Route as SymfonyRoute;
 use Symfony\Component\Routing\CompiledRoute;
+use Symfony\Component\Routing\Route as SymfonyRoute;
 
 /**
  * A Route describes a route and its parameters.
@@ -23,12 +23,19 @@ use Symfony\Component\Routing\CompiledRoute;
 class Route extends SymfonyRoute
 {
     private $path = '/';
+
     private $host = '';
-    private $schemes = array();
-    private $methods = array();
-    private $defaults = array();
-    private $requirements = array();
-    private $options = array();
+
+    private $schemes = [];
+
+    private $methods = [];
+
+    private $defaults = [];
+
+    private $requirements = [];
+
+    private $options = [];
+
     private $condition = '';
 
     /**
@@ -53,7 +60,7 @@ class Route extends SymfonyRoute
      * @param string|string[] $methods      A required HTTP method or an array of restricted methods
      * @param string          $condition    A condition that should evaluate to true for the route to match
      */
-    public function __construct(string $path, array $defaults = array(), array $requirements = array(), array $options = array(), ?string $host = '', $schemes = array(), $methods = array(), ?string $condition = '')
+    public function __construct(string $path, array $defaults = [], array $requirements = [], array $options = [], ?string $host = '', $schemes = [], $methods = [], ?string $condition = '')
     {
         $this->setPath($path);
         $this->addDefaults($defaults);
@@ -70,7 +77,7 @@ class Route extends SymfonyRoute
      */
     public function serialize()
     {
-        return serialize(array(
+        return serialize([
             'path' => $this->path,
             'host' => $this->host,
             'defaults' => $this->defaults,
@@ -80,7 +87,7 @@ class Route extends SymfonyRoute
             'methods' => $this->methods,
             'condition' => $this->condition,
             'compiled' => $this->compiled,
-        ));
+        ]);
     }
 
     /**
@@ -148,7 +155,7 @@ class Route extends SymfonyRoute
 
         // A pattern must start with a slash and must not have multiple slashes at the beginning because the
         // generated path for this route would be confused with a network path, e.g. '//domain.com/path'.
-        
+
         $this->path = '/'.ltrim(trim($pattern), '/');
         $this->compiled = null;
 
@@ -273,9 +280,9 @@ class Route extends SymfonyRoute
      */
     public function setOptions(array $options)
     {
-        $this->options = array(
+        $this->options = [
             'compiler_class' => 'Symfony\\Component\\Routing\\RouteCompiler',
-        );
+        ];
 
         return $this->addOptions($options);
     }
@@ -362,7 +369,7 @@ class Route extends SymfonyRoute
      */
     public function setDefaults(array $defaults)
     {
-        $this->defaults = array();
+        $this->defaults = [];
 
         return $this->addDefaults($defaults);
     }
@@ -447,7 +454,7 @@ class Route extends SymfonyRoute
      */
     public function setRequirements(array $requirements)
     {
-        $this->requirements = array();
+        $this->requirements = [];
 
         return $this->addRequirements($requirements);
     }

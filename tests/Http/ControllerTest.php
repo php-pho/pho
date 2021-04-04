@@ -1,43 +1,55 @@
 <?php
 
-use Pho\TestCase;
 use Pho\Http\Controller;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use function DI\get;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Pho\Http\Session\HmacCookieSessionStorage;
 use Pho\Http\Session\Session;
+use Pho\TestCase;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RequestContext;
+use function DI\get;
 
-class DumbController extends Controller {
-    public function proxyCall($method, $params) {
+class DumbController extends Controller
+{
+    public function proxyCall($method, $params)
+    {
         return call_user_func_array([$this, $method], $params);
     }
 }
 
-class DumpUrlGenerator implements UrlGeneratorInterface {
-    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH) {
+class DumpUrlGenerator implements UrlGeneratorInterface
+{
+    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
+    {
         return '/'.$name;
     }
-    public function setContext(RequestContext $context){
+
+    public function setContext(RequestContext $context)
+    {
         // Nothing
     }
-    public function getContext() {
+
+    public function getContext()
+    {
         // Do nothing
     }
 }
 
-class DumpTwig {
-    public function render($template, $data) {
+class DumpTwig
+{
+    public function render($template, $data)
+    {
         return $template.'=>'.json_encode($data);
     }
 }
 
-class ControllerTest extends TestCase {
-    protected function containerDefinations() {
+class ControllerTest extends TestCase
+{
+    protected function containerDefinations()
+    {
         return [
             'key' => 'value',
             'twig' => get(DumpTwig::class),
@@ -45,14 +57,15 @@ class ControllerTest extends TestCase {
         ];
     }
 
-    public function testFlash() {
+    public function testFlash()
+    {
         $controller = new DumbController($this->container);
         $session = new Session(new HmacCookieSessionStorage());
         $request = Request::create('http://example.site/path', 'GET');
         $request->setSession($session);
         $session->setRequest($request);
         $controller->setRequest($request);
-        
+
         $result = $controller->proxyCall('redirectWithFlash', ['hello', [], 'danger', 'BOOM']);
 
         $this->assertEquals([
@@ -64,7 +77,8 @@ class ControllerTest extends TestCase {
         $this->assertEquals(new RedirectResponse('/hello'), $result);
     }
 
-    protected function removeHeaderDateFromResponse($response) {
+    protected function removeHeaderDateFromResponse($response)
+    {
         if ($response instanceof Response) {
             $response->headers->remove('date');
         }
@@ -74,7 +88,8 @@ class ControllerTest extends TestCase {
     /**
      * @dataProvider dataProvider
      */
-    public function testController($method, $params, $expected, $request = null) {
+    public function testController($method, $params, $expected, $request = null)
+    {
         $controller = new DumbController($this->container);
         $request = $request ?: Request::create(
             'http://example.site/path?q=keyword',
@@ -90,7 +105,8 @@ class ControllerTest extends TestCase {
         );
     }
 
-    public function dataProvider() {
+    public function dataProvider()
+    {
         return [
             [
                 'get', ['key'], 'value'

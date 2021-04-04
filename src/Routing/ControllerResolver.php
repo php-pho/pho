@@ -3,9 +3,9 @@
 namespace Pho\Routing;
 
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerResolver as SymfonyControllerResolver;
-use Psr\Log\LoggerInterface;
 
 class ControllerResolver extends SymfonyControllerResolver
 {

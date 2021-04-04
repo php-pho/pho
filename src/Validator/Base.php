@@ -1,4 +1,5 @@
 <?php
+
 namespace Pho\Validator;
 
 use Respect\Validation\Validator as v;

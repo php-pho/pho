@@ -1,10 +1,11 @@
 <?php
+
 namespace Pho\Core;
 
 use DI\Container;
 use DI\FactoryInterface;
-use Psr\Container\ContainerInterface;
 use Invoker\InvokerInterface;
+use Psr\Container\ContainerInterface;
 
 class ResetableContainer extends Container
 {

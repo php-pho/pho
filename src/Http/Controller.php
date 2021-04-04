@@ -1,6 +1,8 @@
 <?php
+
 namespace Pho\Http;
 
+use Pho\Http\Session\Session;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -11,8 +13,11 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 abstract class Controller
 {
     protected $container;
+
     protected $request;
+
     protected $body;
+
     protected $params;
 
     public function __construct(ContainerInterface $container)
@@ -70,10 +75,13 @@ abstract class Controller
 
     protected function addFlashMessage(string $flash_type, string $flash_content)
     {
-        $this->request->getSession()->getFlashBag()->add('message', [
-            'type' => $flash_type,
-            'content' => $flash_content,
-        ]);
+        $session = $this->request->getSession();
+        if ($session instanceof Session) {
+            $session->getFlashBag()->add('message', [
+                'type' => $flash_type,
+                'content' => $flash_content,
+            ]);
+        }
 
         return $this;
     }

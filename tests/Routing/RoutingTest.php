@@ -1,14 +1,17 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Pho\Routing\Routing;
-use Symfony\Component\Routing\RouteCollection;
 use Pho\Routing\Route;
-class RoutingTest extends TestCase {
+use Pho\Routing\Routing;
+use Pho\TestCase;
+use Symfony\Component\Routing\RouteCollection;
+
+class RoutingTest extends TestCase
+{
     /**
      * @dataProvider dataProviderMap
      */
-    public function testMap($method, $path, $handler, $name, $defaults = [], $requirements = [], $options = []) {
+    public function testMap($method, $path, $handler, $name, $defaults = [], $requirements = [], $options = [])
+    {
         $collection = new RouteCollection();
         $routing = new Routing($collection);
 
@@ -29,7 +32,8 @@ class RoutingTest extends TestCase {
     /**
      * @dataProvider dataProviderCommonMethods
      */
-    public function testCommomMethods($method, $path, $handler, $name, $defaults = [], $requirements = [], $options = []) {
+    public function testCommomMethods($method, $path, $handler, $name, $defaults = [], $requirements = [], $options = [])
+    {
         $collection = new RouteCollection();
         $routing = new Routing($collection);
 
@@ -48,7 +52,8 @@ class RoutingTest extends TestCase {
         $this->assertContains(strtoupper($method), $route->getMethods());
     }
 
-    public function dataProviderMap() {
+    public function dataProviderMap()
+    {
         return [
             ['GET', '', 'dumb_handler1', 'index'],
             ['POST', '', 'dumb_handler2', 'index_post', ['a' => 'b']],
@@ -59,7 +64,8 @@ class RoutingTest extends TestCase {
         ];
     }
 
-    public function dataProviderCommonMethods() {
+    public function dataProviderCommonMethods()
+    {
         return [
             ['get', '', 'dumb_handler1', 'index'],
             ['post', '', 'dumb_handler2', 'index_post', ['a' => 'b']],

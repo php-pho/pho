@@ -1,8 +1,8 @@
 <?php
+
 namespace Pho\ServiceProvider;
 
 use DI\ContainerBuilder;
-use function DI\decorate;
 use Pho\Core\ServiceProviderInterface;
 use Pho\Http\Kernel;
 use Pho\Http\Session\HmacCookieSessionStorage;
@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 use function DI\create;
-use function DI\value;
+use function DI\decorate;
 use function DI\get;
+use function DI\value;
 
 class SessionServiceProvider implements ServiceProviderInterface
 {

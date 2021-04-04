@@ -1,24 +1,30 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Pho\Database\Model;
+use PHPUnit\Framework\TestCase;
 
-class DumbModel extends Model {
+class DumbModel extends Model
+{
     protected $dates = [
         'deleted_at',
     ];
+
     protected $casts = [
         'is_admin' => 'boolean',
     ];
+
     protected $dateFormat = 'U';
 
-    public function getKey1Attribute($value) {
+    public function getKey1Attribute($value)
+    {
         return strtoupper($value);
     }
 }
 
-class ModelTest extends TestCase {
-    public function testGetAttribute() {
+class ModelTest extends TestCase
+{
+    public function testGetAttribute()
+    {
         $model = new DumbModel();
         $model->key1 = 'hello';
         $model->key2 = 123;

@@ -1,14 +1,18 @@
 <?php
+
 namespace Pho;
 
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use DI\ContainerBuilder;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
-abstract class TestCase extends PHPUnitTestCase {
+abstract class TestCase extends PHPUnitTestCase
+{
     protected $container_class = 'DI\Container';
+
     protected $container;
 
-    public function setUp() {
+    protected function setUp(): void
+    {
         $builder = new ContainerBuilder($this->container_class);
         $builder->useAutowiring(true);
         $this->registerServiceProviders($builder);
@@ -16,11 +20,28 @@ abstract class TestCase extends PHPUnitTestCase {
         $this->container = $builder->build();
     }
 
-    protected function containerDefinations() {
+    protected function containerDefinations()
+    {
         return [];
     }
 
-    protected function registerServiceProviders($builder) {
+    protected function registerServiceProviders($builder)
+    {
         // Nothing here
+    }
+
+    protected function assertArraySubset($expectedSubset, $actualArray)
+    {
+        foreach ($expectedSubset as $key => $value) {
+            $this->assertArrayHasKey($key, $actualArray);
+            $this->assertSame($value, $actualArray[$key]);
+        }
+    }
+
+    protected function getAttributeValue($object, $attributeName)
+    {
+        $reflectionProperty = new \ReflectionProperty(get_class($object), $attributeName);
+        $reflectionProperty->setAccessible(true);
+        return $reflectionProperty->getValue($object);
     }
 }

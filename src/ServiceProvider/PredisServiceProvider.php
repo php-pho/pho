@@ -1,11 +1,12 @@
 <?php
+
 namespace Pho\ServiceProvider;
 
-use function DI\autowire;
 use DI\ContainerBuilder;
-use function DI\get;
 use Pho\Core\ServiceProviderInterface;
 use Predis\Client;
+use function DI\autowire;
+use function DI\get;
 
 class PredisServiceProvider implements ServiceProviderInterface
 {

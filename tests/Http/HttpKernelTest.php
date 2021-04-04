@@ -1,37 +1,39 @@
 <?php
 
-use Pho\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Pho\Http\Kernel;
+use Monolog\Handler\NullHandler;
 use Pho\Http\HttpProgram;
-use function DI\get;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Pho\ServiceProvider\HttpServiceProvider;
+use Pho\Http\Kernel;
+use Pho\Http\MiddlewareSubscriber;
 use Pho\Routing\RouteLoader;
 use Pho\Routing\Routing;
-use Symfony\Component\HttpFoundation\Response;
-use function DI\autowire;
+use Pho\ServiceProvider\HttpServiceProvider;
 use Pho\ServiceProvider\LogServiceProvider;
-use Psr\Log\LoggerInterface;
-use Monolog\Handler\NullHandler;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use PHPUnit\Framework\Assert;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Pho\Http\MiddlewareSubscriber;
-use Pho\Http\SessionSubscriber;
 use Pho\ServiceProvider\SessionServiceProvider;
+use Pho\TestCase;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
+use function DI\autowire;
 
-class HttpProgramTestKernel extends Kernel {
-    public function stacks() {}
-    public function events() {}
+class HttpProgramTestKernel extends Kernel
+{
+    public function stacks()
+    {
+    }
+
+    public function events()
+    {
+    }
 }
 
-class HttpProgramTestRouter extends RouteLoader {
-    public function routes(Routing $routing) {
-        $routing->get('/hello', function() {
+class HttpProgramTestRouter extends RouteLoader
+{
+    public function routes(Routing $routing)
+    {
+        $routing->get('/hello', function () {
             return new Response('world');
         }, 'hello', [
             '_before' => function (Request $request) {
@@ -41,29 +43,38 @@ class HttpProgramTestRouter extends RouteLoader {
     }
 }
 
-class DumbHttpKernel implements HttpKernelInterface {
-    public function __construct() {}
+class DumbHttpKernel implements HttpKernelInterface
+{
+    public function __construct()
+    {
+    }
 
-    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true) {
+    public function handle(Request $request, $type = self::MASTER_REQUEST, $catch = true)
+    {
         return new Response('dumb_kernel');
     }
 }
 
-class DumbHttpSubscriber implements EventSubscriberInterface {
-    public function onTerminate(PostResponseEvent $event) {
+class DumbHttpSubscriber implements EventSubscriberInterface
+{
+    public function onTerminate(TerminateEvent $event)
+    {
         $request = $event->getRequest();
         $request->attributes->set('terminated_by_subscriber', true);
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents()
+    {
         return [
             KernelEvents::TERMINATE => 'onTerminate',
         ];
     }
 }
 
-class HttpKernelTest extends TestCase {
-    protected function registerServiceProviders($builder) {
+class HttpKernelTest extends TestCase
+{
+    protected function registerServiceProviders($builder)
+    {
         $log_service_provider = new LogServiceProvider();
         $log_service_provider->register($builder, [
             'logger.handler' => autowire(NullHandler::class),
@@ -72,7 +83,7 @@ class HttpKernelTest extends TestCase {
         $http_service_provider = new HttpServiceProvider();
         $http_service_provider->register($builder, [
             'kernel.class' => HttpProgramTestKernel::class,
-            'http.request' => function() {
+            'http.request' => function () {
                 return Request::create('http://example.site/hello', 'GET');
             },
             RouteLoader::class => autowire(HttpProgramTestRouter::class),
@@ -84,23 +95,24 @@ class HttpKernelTest extends TestCase {
         ]);
     }
 
-    public function testHttpKernel() {
+    public function testHttpKernel()
+    {
         $kernel = $this->container->make(Kernel::class);
         $push = $kernel->push(DumbHttpKernel::class);
 
         $this->assertSame($kernel, $push);
 
-        $stackBuilder = Assert::getObjectAttribute($kernel, 'stackBuilder');
-        $stacks = Assert::getObjectAttribute($stackBuilder, 'specs');
+        $stackBuilder = $this->getAttributeValue($kernel, 'stackBuilder');
+        $stacks = $this->getAttributeValue($stackBuilder, 'specs');
 
         $this->assertEquals(1, $stacks->count());
 
-        $kernel->on(KernelEvents::TERMINATE, function(PostResponseEvent $event) {
+        $kernel->on(KernelEvents::TERMINATE, function (TerminateEvent $event) {
             $request = $event->getRequest();
             $request->attributes->set('terminated', true);
         });
         $kernel->subscribe(DumbHttpSubscriber::class);
-        
+
         $request = Request::create('http://example.site/path', 'GET');
         $response = $kernel->handle($request);
         $this->assertEquals(200, $response->getStatusCode());
@@ -111,7 +123,8 @@ class HttpKernelTest extends TestCase {
         $this->assertEquals(true, $request->attributes->get('terminated_by_subscriber', false));
     }
 
-    public function testMiddlewareSubscriber() {
+    public function testMiddlewareSubscriber()
+    {
         $kernel = $this->container->make(Kernel::class);
         $kernel->subscribe(MiddlewareSubscriber::class);
 
@@ -121,7 +134,8 @@ class HttpKernelTest extends TestCase {
         $this->assertEquals(true, $request->attributes->get('before_controller', false));
     }
 
-    public function testSessionSubscriber() {
+    public function testSessionSubscriber()
+    {
         $kernel = $this->container->make(Kernel::class);
 
         $request = Request::create('http://example.site/path', 'GET', [], [
@@ -133,9 +147,10 @@ class HttpKernelTest extends TestCase {
         $this->assertEquals('world', $session->get('hello'));
     }
 
-    public function testHttpProgram() {
+    public function testHttpProgram()
+    {
         $program = $this->container->make(HttpProgram::class);
-        
+
         ob_start();
         $program->run();
         $content = ob_get_flush();

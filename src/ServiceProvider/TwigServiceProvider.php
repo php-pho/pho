@@ -2,14 +2,13 @@
 
 namespace Pho\ServiceProvider;
 
-use function DI\autowire;
-use function DI\get;
-use Twig_Environment;
+use DI\ContainerBuilder;
+use Pho\Core\ServiceProviderInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\Loader\LoaderInterface;
-use DI\ContainerBuilder;
-use Pho\Core\ServiceProviderInterface;
+use function DI\autowire;
+use function DI\get;
 
 class TwigServiceProvider implements ServiceProviderInterface
 {
@@ -24,7 +23,6 @@ class TwigServiceProvider implements ServiceProviderInterface
             ->method('addPath', get('twig.path'));
         $def[Environment::class] = autowire()
             ->constructor(get(LoaderInterface::class), get('twig.options'));
-        $def[Twig_Environment::class] = get(Environment::class);
         $def['twig'] = get(Environment::class);
 
         $def = array_merge($def, $opts);

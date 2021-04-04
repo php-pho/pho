@@ -132,3 +132,6 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/code,macos,linux,windows,phpstorm,composer
 
 /.php_cs.cache
+
+# phpunit
+.phpunit.result.cache

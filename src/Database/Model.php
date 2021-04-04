@@ -1,4 +1,5 @@
 <?php
+
 namespace Pho\Database;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
@@ -6,10 +7,13 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 class Model extends EloquentModel
 {
     public static $key_types = [];
-    
+
     protected const KEY_TYPE_RAW = 1;
+
     protected const KEY_TYPE_MUTATOR = 2;
+
     protected const KEY_TYPE_CAST = 3;
+
     protected const KEY_TYPE_DATETIME = 4;
 
     protected function getTypeByKey(string $key)

@@ -1,11 +1,12 @@
 <?php
+
 namespace Pho\ServiceProvider;
 
 use DI\ContainerBuilder;
-use function DI\get;
 use Pho\Core\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
 use Redis;
+use function DI\get;
 
 class RedisServiceProvider implements ServiceProviderInterface
 {

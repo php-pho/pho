@@ -1,4 +1,5 @@
 <?php
+
 namespace Pho\Http\Session;
 
 use Symfony\Component\HttpFoundation\Cookie;
@@ -11,15 +12,25 @@ use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 class HmacCookieSessionStorage implements SessionStorageInterface
 {
     protected $started = false;
+
     protected $touched = false;
+
     protected $name = 'PHO_SESSION';
+
     protected $saveHandler;
+
     protected $bags = [];
+
     protected $data = [];
+
     protected $secret;
+
     protected $algorithm;
+
     protected $request;
+
     protected $response;
+
     protected $metadataBag;
 
     public function __construct($secret = null, $algorithm = 'sha256')
@@ -149,7 +160,7 @@ class HmacCookieSessionStorage implements SessionStorageInterface
 
         foreach ($this->bags as $bag) {
             $key = $bag->getStorageKey();
-            $this->data[$key] = isset($this->data[$key]) ? $this->data[$key] : array();
+            $this->data[$key] = isset($this->data[$key]) ? $this->data[$key] : [];
             $bag->initialize($this->data[$key]);
         }
 
@@ -177,7 +188,7 @@ class HmacCookieSessionStorage implements SessionStorageInterface
         if (!$this->checkSignature($sessionData, $signature)) {
             return [];
         }
-        
+
         return unserialize(base64_decode($sessionData));
     }
 }

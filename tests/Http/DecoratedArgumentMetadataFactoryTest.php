@@ -1,17 +1,21 @@
 <?php
 
-use Pho\TestCase;
-use Pho\Http\DecoratedArgumentMetadataFactory;
-use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Pho\Http\BeforeController;
+use Pho\Http\DecoratedArgumentMetadataFactory;
+use Pho\TestCase;
+use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
-class DecoratedArgumentMetadataFactoryTestController {
-    public function hello($a, int $b = 1) {
+class DecoratedArgumentMetadataFactoryTestController
+{
+    public function hello($a, int $b = 1)
+    {
         return $a.$b;
     }
 }
-class DecoratedArgumentMetadataFactoryTest extends TestCase {
-    public function testCreateArgumentMetadata() {
+class DecoratedArgumentMetadataFactoryTest extends TestCase
+{
+    public function testCreateArgumentMetadata()
+    {
         $object = $this->container->make(DecoratedArgumentMetadataFactory::class);
 
         $controller = new DecoratedArgumentMetadataFactoryTestController();

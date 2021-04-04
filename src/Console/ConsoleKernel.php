@@ -4,10 +4,12 @@ namespace Pho\Console;
 
 use Psr\Container\ContainerInterface;
 use Silly\Edition\PhpDi\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class ConsoleKernel
 {
     protected $container;
+
     protected $app;
 
     public function __construct(ContainerInterface $container, Application $app)
@@ -24,6 +26,11 @@ abstract class ConsoleKernel
     public function run(): int
     {
         return $this->app->run();
+    }
+
+    public function runCommand($command, OutputInterface $output = null)
+    {
+        return $this->app->runCommand($command, $output);
     }
 
     abstract public function commands();

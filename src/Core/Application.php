@@ -8,6 +8,7 @@ use DI\ContainerBuilder;
 class Application
 {
     private $containerBuilder;
+
     private $container;
 
     public function __construct(ContainerBuilder $containerBuilder = null)

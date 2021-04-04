@@ -4,7 +4,7 @@ namespace Pho\Routing;
 
 use Symfony\Component\Routing\RouteCollection;
 
-class Routing
+class Routing implements RoutingAbstract
 {
     private $collection;
 
@@ -20,7 +20,7 @@ class Routing
         $this->prefixName = $prefixName;
     }
 
-    public function getRouteCollection()
+    public function getRouteCollection(): RouteCollection
     {
         return $this->collection;
     }

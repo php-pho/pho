@@ -13,11 +13,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 abstract class Kernel
 {
-    private $container;
-    private $stackBuilder;
-    private $httpKernel;
-    private $dispatcher;
-    private $resolvedKernel;
+    protected $container;
+
+    protected $stackBuilder;
+
+    protected $httpKernel;
+
+    protected $dispatcher;
+
+    protected $resolvedKernel;
 
     public function __construct(ContainerInterface $container, Builder $builder, HttpKernel $httpKernel, EventDispatcherInterface $dispatcher)
     {
@@ -74,5 +78,6 @@ abstract class Kernel
     }
 
     abstract public function stacks();
+
     abstract public function events();
 }

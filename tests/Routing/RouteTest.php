@@ -1,16 +1,19 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
 use Pho\Routing\Route;
+use Pho\TestCase;
 
-class RouteTest extends TestCase {
-    public function testConstructor() {
+class RouteTest extends TestCase
+{
+    public function testConstructor()
+    {
         $route = new Route('');
 
         $this->assertEquals('', $route->getPath());
     }
 
-    public function testSetPath() {
+    public function testSetPath()
+    {
         $route = new Route('/');
 
         $this->assertEquals('/', $route->getPath());

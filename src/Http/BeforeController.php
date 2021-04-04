@@ -1,4 +1,5 @@
 <?php
+
 namespace Pho\Http;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -6,7 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 class BeforeController
 {
     private $before;
+
     private $controller;
+
     private $request;
 
     public function __construct($before, $controller)

@@ -2,14 +2,14 @@
 
 namespace Pho\ServiceProvider;
 
-use function DI\autowire;
-use function DI\get;
 use DI\ContainerBuilder;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Events\Dispatcher;
 use Pho\Core\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
-use Illuminate\Events\Dispatcher;
+use function DI\autowire;
+use function DI\get;
 
 class EloquentServiceProvider implements ServiceProviderInterface
 {

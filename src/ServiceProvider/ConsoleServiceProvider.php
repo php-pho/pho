@@ -1,13 +1,14 @@
 <?php
+
 namespace Pho\ServiceProvider;
 
-use function DI\get;
-use function DI\create;
 use DI\ContainerBuilder;
-use Pho\Core\ServiceProviderInterface;
 use Pho\Console\ConsoleKernel;
+use Pho\Core\ServiceProviderInterface;
 use Psr\Container\ContainerInterface;
 use Silly\Edition\PhpDi\Application;
+use function DI\create;
+use function DI\get;
 
 class ConsoleServiceProvider implements ServiceProviderInterface
 {

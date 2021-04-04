@@ -1,27 +1,30 @@
 <?php
 
-use Pho\TestCase;
+use DI\ContainerBuilder;
 use Pho\Core\Application;
 use Pho\Core\ServiceProviderInterface;
-use DI\ContainerBuilder;
-use function DI\get;
+use Pho\TestCase;
 use function DI\create;
+use function DI\get;
 
-class DumpProgram {
+class DumpProgram
+{
     private $name;
 
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->name = $name;
     }
 
-    public function run($prefix) {
+    public function run($prefix)
+    {
         return $prefix.$this->name;
     }
 }
-class DumbServiceProvider implements ServiceProviderInterface {
+class DumbServiceProvider implements ServiceProviderInterface
+{
     public function register(ContainerBuilder $containerBuilder, array $opts = [])
     {
-
         $def = [
             'key' => 'value',
             'override' => 'old',
@@ -35,8 +38,10 @@ class DumbServiceProvider implements ServiceProviderInterface {
     }
 }
 
-class ApplicationTest extends TestCase {
-    public function testContainer() {
+class ApplicationTest extends TestCase
+{
+    public function testContainer()
+    {
         $app = new Application(new ContainerBuilder());
         $dump_service_provider = new DumbServiceProvider();
         $app->register($dump_service_provider, ['override' => 'new']);
@@ -50,7 +55,8 @@ class ApplicationTest extends TestCase {
         $this->assertSame($dump_service_provider, $container1->get(DumbServiceProvider::class));
     }
 
-    public function testRun() {
+    public function testRun()
+    {
         $app = new Application(new ContainerBuilder());
         $app->register(new DumbServiceProvider());
         $app->buildContainer();

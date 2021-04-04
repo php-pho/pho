@@ -1,18 +1,20 @@
 <?php
+
 namespace Pho\Http;
 
-use Symfony\Component\Debug\ExceptionHandler;
+use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionController
 {
     protected $handler;
+
     protected $request;
 
-    public function __construct(ExceptionHandler $exceptionHandler)
+    public function __construct(ErrorHandler $errorHandler)
     {
-        $this->handler = $exceptionHandler;
+        $this->handler = $errorHandler;
     }
 
     public function setRequest(Request $request)
@@ -23,7 +25,12 @@ class ExceptionController
     public function __invoke()
     {
         $exception = $this->request->attributes->get('exception');
+        $handler = $this->handler;
+        $handler->setExceptionHandler([$handler, 'renderException']);
+        ob_start();
+        $handler->handleException($exception);
+        $response = ob_get_clean();
 
-        return new Response($this->handler->getHtml($exception), $exception->getStatusCode(), $exception->getHeaders());
+        return new Response($response, $exception->getStatusCode(), $exception->getHeaders());
     }
 }

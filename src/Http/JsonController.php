@@ -1,10 +1,11 @@
 <?php
+
 namespace Pho\Http;
 
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpFoundation\Request;
 use Respect\Validation\Exceptions\NestedValidationException;
+use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class JsonController extends Controller
 {

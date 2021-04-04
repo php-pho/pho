@@ -1,29 +1,34 @@
 <?php
 
-use Pho\TestCase;
-use Pho\Routing\ControllerResolver;
-use Symfony\Component\HttpFoundation\Request;
-use Pho\Http\Controller;
-use Pho\ServiceProvider\LogServiceProvider;
 use Monolog\Handler\NullHandler;
-use function DI\autowire;
+use Pho\Http\Controller;
+use Pho\Routing\ControllerResolver;
+use Pho\ServiceProvider\LogServiceProvider;
+use Pho\TestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use function DI\autowire;
 
-class DumbResolvedController extends Controller {
-    public function dummy() {
+class DumbResolvedController extends Controller
+{
+    public function dummy()
+    {
         return new Response('dummy');
     }
 }
 
-class ControllerResolverTest extends TestCase {
-    protected function registerServiceProviders($builder) {
+class ControllerResolverTest extends TestCase
+{
+    protected function registerServiceProviders($builder)
+    {
         $log_service_provider = new LogServiceProvider();
         $log_service_provider->register($builder, [
             'logger.handler' => autowire(NullHandler::class),
         ]);
     }
 
-    public function testGetController() {
+    public function testGetController()
+    {
         $dumb_controller = $this->container->get(DumbResolvedController::class);
         $resolver = $this->container->make(ControllerResolver::class);
         $request = Request::create('http://example.site/hello', 'GET');
@@ -32,6 +37,5 @@ class ControllerResolverTest extends TestCase {
 
         $object = $controller[0];
         $this->assertSame($dumb_controller, $object);
-        $this->assertAttributeSame($request, 'request', $object);
     }
 }
