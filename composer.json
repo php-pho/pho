@@ -5,23 +5,23 @@
     "license": "MIT",
     "authors": [
         {
-        "name": "KhanhIceTea",
-        "email": "khanhicetea@gmail.com"
+            "name": "KhanhIceTea",
+            "email": "khanhicetea@gmail.com"
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.3",
         "php-di/php-di": "^6.0",
         "monolog/monolog": "^1.23",
         "stack/builder": "^1.0",
-        "symfony/config": "^4.1",
-        "symfony/routing": "^4.1",
-        "symfony/twig-bridge": "^4.1",
+        "symfony/config": "^5.3",
+        "symfony/routing": "^5.3",
+        "symfony/twig-bridge": "^5.3",
         "twig/twig": "^2.0",
         "mnapoli/silly-php-di": "^1.2",
         "predis/predis": "^1.1",
-        "illuminate/database": "^5.6",
-        "illuminate/events": "^5.6",
+        "illuminate/database": "^8.48",
+        "illuminate/events": "^8.48",
         "respect/validation": "^1.1"
     },
     "autoload": {

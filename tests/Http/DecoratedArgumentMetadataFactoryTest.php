@@ -9,7 +9,7 @@ class DecoratedArgumentMetadataFactoryTestController
 {
     public function hello($a, int $b = 1)
     {
-        return $a.$b;
+        return $a . $b;
     }
 }
 class DecoratedArgumentMetadataFactoryTest extends TestCase

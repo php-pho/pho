@@ -46,7 +46,7 @@ class JsonController extends Controller
             $validator->assert($this->body->all());
         } catch (NestedValidationException $exception) {
             $messages = implode(', ', $exception->getMessages());
-            throw new HttpException(400, 'Malformed JSON body : '.$messages);
+            throw new HttpException(400, 'Malformed JSON body : ' . $messages);
         }
     }
 }

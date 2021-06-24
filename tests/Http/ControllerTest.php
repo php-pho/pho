@@ -24,7 +24,7 @@ class DumpUrlGenerator implements UrlGeneratorInterface
 {
     public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
     {
-        return '/'.$name;
+        return '/' . $name;
     }
 
     public function setContext(RequestContext $context)
@@ -42,7 +42,7 @@ class DumpTwig
 {
     public function render($template, $data)
     {
-        return $template.'=>'.json_encode($data);
+        return $template . '=>' . json_encode($data);
     }
 }
 

@@ -73,46 +73,6 @@ class Route extends SymfonyRoute
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function serialize()
-    {
-        return serialize([
-            'path' => $this->path,
-            'host' => $this->host,
-            'defaults' => $this->defaults,
-            'requirements' => $this->requirements,
-            'options' => $this->options,
-            'schemes' => $this->schemes,
-            'methods' => $this->methods,
-            'condition' => $this->condition,
-            'compiled' => $this->compiled,
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function unserialize($serialized)
-    {
-        $data = unserialize($serialized);
-        $this->path = $data['path'];
-        $this->host = $data['host'];
-        $this->defaults = $data['defaults'];
-        $this->requirements = $data['requirements'];
-        $this->options = $data['options'];
-        $this->schemes = $data['schemes'];
-        $this->methods = $data['methods'];
-
-        if (isset($data['condition'])) {
-            $this->condition = $data['condition'];
-        }
-        if (isset($data['compiled'])) {
-            $this->compiled = $data['compiled'];
-        }
-    }
-
-    /**
      * Returns the pattern for the path.
      *
      * @return string The path pattern
@@ -149,14 +109,14 @@ class Route extends SymfonyRoute
                     $this->setRequirement($m[1], substr($m[2], 1, -1));
                 }
 
-                return '{'.$m[1].'}';
+                return '{' . $m[1] . '}';
             }, $pattern);
         }
 
         // A pattern must start with a slash and must not have multiple slashes at the beginning because the
         // generated path for this route would be confused with a network path, e.g. '//domain.com/path'.
 
-        $this->path = '/'.ltrim(trim($pattern), '/');
+        $this->path = '/' . ltrim(trim($pattern), '/');
         $this->compiled = null;
 
         return $this;

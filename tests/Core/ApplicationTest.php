@@ -18,7 +18,7 @@ class DumpProgram
 
     public function run($prefix)
     {
-        return $prefix.$this->name;
+        return $prefix . $this->name;
     }
 }
 class DumbServiceProvider implements ServiceProviderInterface
