@@ -18,9 +18,11 @@ abstract class ConsoleKernel
         $this->app = $app;
     }
 
-    protected function command(string $expression, $callable, array $aliases = [])
+    protected function command(string $expression, $callable, array $aliases = [], string $description = '')
     {
-        $this->app->command($expression, $callable, $aliases);
+        $command = $this->app->command($expression, $callable, $aliases);
+        $command->setDescription($description);
+        return $command;
     }
 
     public function run(): int
